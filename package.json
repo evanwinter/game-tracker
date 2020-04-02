@@ -1,0 +1,42 @@
+{
+  "name": "game-tracker",
+  "private": true,
+  "description": "An app for tracking results of games between friends.",
+  "version": "0.1.0",
+  "author": "Evan Winter <evan@evanwinter.me>",
+  "license": "MIT",
+  "scripts": {
+    "build": "gatsby build",
+    "develop": "gatsby develop",
+    "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
+    "start": "npm run develop",
+    "serve": "gatsby serve",
+    "clean": "gatsby clean",
+    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
+  },
+  "dependencies": {
+    "gatsby": "^2.20.10",
+    "gatsby-plugin-alias-imports": "^1.0.5",
+    "gatsby-plugin-layout": "^1.2.1",
+    "gatsby-plugin-manifest": "^2.3.3",
+    "gatsby-plugin-offline": "^3.1.2",
+    "gatsby-plugin-react-redux": "^1.1.0-0",
+    "gatsby-plugin-sass": "^2.2.1",
+    "node-sass": "^4.13.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-redux": "^7.2.0",
+    "redux": "^4.0.5"
+  },
+  "devDependencies": {
+    "prettier": "^1.19.1",
+    "redux-logger": "^3.0.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/evanwinter/game-tracker/"
+  },
+  "bugs": {
+    "url": "https://github.com/evanwinter/game-tracker/issues/"
+  }
+}
