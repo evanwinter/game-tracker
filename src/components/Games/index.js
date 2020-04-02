@@ -1,24 +1,31 @@
 import React from "react"
-import { graphql, useStaticQuery } from "gatsby"
+import { useDispatch } from "react-redux"
+import T from "@types"
 
 const Games = () => {
-	const gamesData = useStaticQuery(
-		graphql`
-			query {
-				allGame {
-					edges {
-						node {
-							title
-						}
-					}
-				}
-			}
-		`,
-	)
+	const dispatch = useDispatch()
 
-	const games = gamesData.allGame.edges
-		.map((edge) => edge.node)
-		.map((node) => node.title)
+	// games => all games stored in firestore
+	const games = [
+		"settlers of catan",
+		"bananagrams",
+		"carcassone",
+		"gin rummy",
+		"ticket to ride",
+	]
+
+	// on game select => (1) set session.game in redux and (2) set next step in redux
+	const handleClick = (e) => {
+		const { id } = e.currentTarget.dataset
+		dispatch({
+			type: T.SET_GAME,
+			game: id,
+		})
+		dispatch({
+			type: T.SET_STEP,
+			step: T.STEP_CHOOSING_PLAYERS,
+		})
+	}
 
 	return (
 		<div className="Games">
@@ -27,7 +34,11 @@ const Games = () => {
 			<ul>
 				{games &&
 					games.map((game) => {
-						return <li key={game}>{game}</li>
+						return (
+							<li key={game} data-id={game} onClick={handleClick}>
+								{game}
+							</li>
+						)
 					})}
 			</ul>
 		</div>

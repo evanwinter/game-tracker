@@ -1,66 +1,67 @@
 import T from "@types"
 
 const initialState = {
-  general: {
-    step: T.STEPS.CHOOSING_GAME,
-    useOfflineData: true,
-    offlineData: {
-      games: [
-        "Settlers of Catan",
-        "Gin Rummy",
-        "Carcassone",
-        "Bananagrams",
-        "Ticket to Ride",
-      ],
-      players: ["evan", "emily", "leif", "martina"],
-    },
-  },
+	general: {
+		step: T.STEP_CHOOSING_GAME,
+	},
 
-  modal: {
-    show: false,
-    content: {
-      headline: "",
-      body: "",
-    },
-  },
+	modal: {
+		show: false,
+		content: {
+			headline: "",
+			body: "",
+		},
+	},
 
-  session: {
-    game: "",
-    players: [],
-    winner: "",
-  },
+	session: {
+		game: "",
+		players: [],
+		winner: "",
+	},
 }
 
 const reducer = (state = initialState, action) => {
-  if (action.type === T.SET_GAME) {
-    return {
-      ...state,
-      session: {
-        ...state.session,
-        game: action.game,
-      },
-    }
-  }
+	if (action.type === T.SET_GAME) {
+		return {
+			...state,
+			session: {
+				...state.session,
+				game: action.game,
+			},
+		}
+	}
 
-  if (action.type === T.SET_PLAYERS) {
-    return {
-      ...state,
-      session: {
-        ...state.session,
-        players: action.players,
-      },
-    }
-  }
+	if (action.type === T.SET_PLAYERS) {
+		return {
+			...state,
+			session: {
+				...state.session,
+				players: action.players,
+			},
+		}
+	}
 
-  if (action.type === T.SET_GAME) {
-    return {
-      ...state,
-      session: {
-        ...state.session,
-        game: action.game,
-      },
-    }
-  }
+	if (action.type === T.SET_WINNER) {
+		return {
+			...state,
+			session: {
+				...state.session,
+				winner: action.winner,
+			},
+		}
+	}
+
+	if (action.type === T.SET_STEP) {
+		return {
+			...state,
+			general: {
+				...state.general,
+				step: action.step,
+			},
+		}
+	}
+
+	return state
 }
 
 export default reducer
