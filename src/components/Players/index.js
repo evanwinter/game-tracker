@@ -1,6 +1,5 @@
 import React from "react"
 import { graphql, useStaticQuery } from "gatsby"
-import data from "@data"
 
 const Players = () => {
 	const playersData = useStaticQuery(
