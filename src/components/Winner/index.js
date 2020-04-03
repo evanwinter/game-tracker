@@ -30,8 +30,10 @@ const Winner = () => {
 				{players &&
 					players.map((player) => {
 						return (
-							<li onClick={handleClick} key={player} data-id={player}>
-								{player}
+							<li key={player}>
+								<button data-id={player} onClick={handleClick}>
+									{player}
+								</button>
 							</li>
 						)
 					})}

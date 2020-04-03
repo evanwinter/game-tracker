@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import Anime from "react-anime"
 import { useSelector, useDispatch } from "react-redux"
 import Players from "@components/Players"
@@ -42,19 +42,17 @@ const App = () => {
 
 	return (
 		<div className="App">
-			<header>
+			{/* <header>
 				<button onClick={prevStep}>Previous</button>
 				<button onClick={nextStep}>Next</button>
-			</header>
-			<main>
-				<Anime
-					opacity={[0, 1]}
-					translateY={[32, 0]}
-					duration={500}
-					easing={"easeInOutQuad"}>
-					{content}
-				</Anime>
-			</main>
+			</header> */}
+			<Anime
+				opacity={[0, 1]}
+				translateY={[32, 0]}
+				duration={500}
+				easing={"easeInOutQuad"}>
+				{content}
+			</Anime>
 		</div>
 	)
 }

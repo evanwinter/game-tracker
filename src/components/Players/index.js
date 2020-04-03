@@ -1,15 +1,14 @@
-import React, { useState } from "react"
-import { useDispatch } from "react-redux"
+import React, { useState, useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import T from "@types"
+import database from "@database"
+import AddPlayer from "./AddPlayer"
 
 const Players = () => {
-	// players => all players in firestore
-	const players = ["evan", "leif", "martina", "emily"]
-
 	const dispatch = useDispatch()
-	const [selectedPlayers, setSelectedPlayers] = useState([])
+	const { players } = useSelector((state) => state.database)
 
-	// on player click => add player to session.players
+	const [selectedPlayers, setSelectedPlayers] = useState([])
 	const handleClick = (e) => {
 		const { id, isSelected } = e.currentTarget.dataset
 		if (JSON.parse(isSelected) === true) {
@@ -19,10 +18,7 @@ const Players = () => {
 		}
 	}
 
-	// on submit => set general.step
-	const handleSubmit = (e) => {
-		console.log(selectedPlayers)
-
+	const handleSubmit = () => {
 		dispatch({
 			type: T.SET_PLAYERS,
 			players: selectedPlayers,
@@ -34,6 +30,22 @@ const Players = () => {
 		})
 	}
 
+	useEffect(() => {
+		const loadPlayers = async () => {
+			const players = await database.fetchPlayers()
+			if (players) {
+				dispatch({
+					type: T.LOAD_PLAYERS,
+					players: players,
+				})
+			}
+		}
+
+		if (!players || players.length === 0) {
+			loadPlayers()
+		}
+	}, [dispatch, players])
+
 	return (
 		<div className="Players">
 			<hr />
@@ -42,17 +54,24 @@ const Players = () => {
 				{players &&
 					players.map((player) => {
 						return (
-							<li
-								key={player}
-								data-id={player}
-								data-is-selected={selectedPlayers.includes(player)}
-								onClick={handleClick}>
-								{player}
+							<li key={player}>
+								<button
+									data-id={player}
+									data-is-selected={selectedPlayers.includes(player)}
+									onClick={handleClick}>
+									{player}
+								</button>
 							</li>
 						)
 					})}
 			</ul>
-			<button onClick={handleSubmit}>Confirm Players</button>
+			<button disabled={selectedPlayers.length < 2} onClick={handleSubmit}>
+				Confirm Players
+			</button>
+			{selectedPlayers.length < 2 && (
+				<small>Please select at least two players.</small>
+			)}
+			<AddPlayer />
 		</div>
 	)
 }

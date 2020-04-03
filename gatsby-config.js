@@ -29,10 +29,11 @@ module.exports = {
 			options: {
 				alias: {
 					"@components": "src/components",
-					"@utils": "src/core/services/utils.js",
+					"@utils": "src/core/services/utilities.js",
 					"@types": "src/core/state/types.js",
+					"@actions": "src/core/state/actions.js",
 					"@styles": "src/styles",
-					"@data": "sample-data/data.js",
+					"@database": "src/core/services/database.js",
 				},
 				extensions: ["js", "scss"],
 			},
@@ -52,6 +53,23 @@ module.exports = {
 			resolve: `gatsby-plugin-react-redux`,
 			options: {
 				pathToCreateStoreModule: "./src/core/state/store",
+			},
+		},
+
+		// Firebase plugin
+		{
+			resolve: "gatsby-plugin-firebase",
+			options: {
+				credentials: {
+					apiKey: process.env.GATSBY_FIREBASE_API_KEY,
+					authDomain: "game-tracker-58601.firebaseapp.com",
+					databaseURL: "https://game-tracker-58601.firebaseio.com",
+					projectId: "game-tracker-58601",
+					storageBucket: "game-tracker-58601.appspot.com",
+					messagingSenderId: "545153584949",
+					appId: "1:545153584949:web:1b8c3f1fb5c1734b1f067c",
+					measurementId: "G-2NPZF7FPSV",
+				},
 			},
 		},
 	],

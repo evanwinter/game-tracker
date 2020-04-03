@@ -1,14 +1,13 @@
 import React from "react"
-import { useSelector } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
+import T from "@types"
+import database from "@database"
 
 const Review = () => {
+	const dispatch = useDispatch()
 	const { game, players, winner } = useSelector((state) => state.session)
 	const time = Date.now()
 
-	// on submit =>
-	// 		(1) create obj with data and a timestamp
-	// 		(2) send to firestore "results" collection
-	//		(3) check if there's a new player or game - if so, send to firestore collection
 	const handleSubmit = () => {
 		const result = {
 			game,
@@ -17,11 +16,10 @@ const Review = () => {
 			time,
 		}
 
-		const isNewGame = false
-		const isNewPlayers = false
-
-		console.log("Saving to database", result)
+		database.saveGameResult(result)
 	}
+
+	const handleRestart = () => dispatch({ type: T.RESTART })
 
 	return (
 		<div className="Review">
@@ -33,6 +31,7 @@ const Review = () => {
 				<li>Winner: {winner}</li>
 				<li>Time: {time}</li>
 			</ul>
+			<button onClick={handleRestart}>Start Over</button>
 			<button onClick={handleSubmit}>Submit</button>
 		</div>
 	)

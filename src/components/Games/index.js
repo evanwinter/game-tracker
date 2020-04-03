@@ -1,20 +1,13 @@
-import React from "react"
-import { useDispatch } from "react-redux"
+import React, { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import T from "@types"
+import database from "@database"
+import AddGame from "./AddGame"
 
 const Games = () => {
 	const dispatch = useDispatch()
+	const { games } = useSelector((state) => state.database)
 
-	// games => all games stored in firestore
-	const games = [
-		"settlers of catan",
-		"bananagrams",
-		"carcassone",
-		"gin rummy",
-		"ticket to ride",
-	]
-
-	// on game select => (1) set session.game in redux and (2) set next step in redux
 	const handleClick = (e) => {
 		const { id } = e.currentTarget.dataset
 		dispatch({
@@ -27,6 +20,22 @@ const Games = () => {
 		})
 	}
 
+	useEffect(() => {
+		const loadGames = async () => {
+			const games = await database.fetchGames()
+			if (!games) return []
+
+			dispatch({
+				type: T.LOAD_GAMES,
+				games: games,
+			})
+		}
+
+		if (!games || games.length === 0) {
+			loadGames()
+		}
+	}, [dispatch, games])
+
 	return (
 		<div className="Games">
 			<hr />
@@ -35,12 +44,15 @@ const Games = () => {
 				{games &&
 					games.map((game) => {
 						return (
-							<li key={game} data-id={game} onClick={handleClick}>
-								{game}
+							<li key={game}>
+								<button data-id={game} onClick={handleClick}>
+									{game}
+								</button>
 							</li>
 						)
 					})}
 			</ul>
+			<AddGame />
 		</div>
 	)
 }

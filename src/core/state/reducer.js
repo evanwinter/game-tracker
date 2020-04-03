@@ -18,6 +18,11 @@ const initialState = {
 		players: [],
 		winner: "",
 	},
+
+	database: {
+		games: [],
+		players: [],
+	},
 }
 
 const reducer = (state = initialState, action) => {
@@ -59,6 +64,50 @@ const reducer = (state = initialState, action) => {
 				step: action.step,
 			},
 		}
+	}
+
+	if (action.type === T.LOAD_GAMES) {
+		return {
+			...state,
+			database: {
+				...state.database,
+				games: action.games,
+			},
+		}
+	}
+
+	if (action.type === T.LOAD_PLAYERS) {
+		return {
+			...state,
+			database: {
+				...state.database,
+				players: action.players,
+			},
+		}
+	}
+
+	if (action.type === T.SAVE_NEW_GAME) {
+		return {
+			...state,
+			database: {
+				...state.database,
+				games: [...state.database.games, action.game],
+			},
+		}
+	}
+
+	if (action.type === T.SAVE_NEW_PLAYER) {
+		return {
+			...state,
+			database: {
+				...state.database,
+				players: [...state.database.players, action.player],
+			},
+		}
+	}
+
+	if (action.type === T.RESTART) {
+		return initialState
 	}
 
 	return state
