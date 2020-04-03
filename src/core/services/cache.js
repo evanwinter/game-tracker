@@ -1,5 +1,11 @@
 import { get, set } from "idb-keyval"
 
+const toMinutes = (ms) => Math.round(Math.floor(ms / 1000 / 60))
+const oneMinute = 1000 * 60
+const oneHour = oneMinute * 60
+const oneDay = oneHour * 24
+const thirtySeconds = oneMinute / 2
+
 const Cache = {
 	store: async function(key, val) {
 		try {
@@ -12,13 +18,9 @@ const Cache = {
 	retrieve: async function(key) {
 		try {
 			// Check if the cached value is stale (set over 30 seconds ago for now)
-			const lastFetched = await get(`${key}__lastFetched`)
+			const lastFetched = await get(`lastFetched`)
 			if (lastFetched) {
 				const now = Date.now()
-				const oneMinute = 1000 * 60
-				const oneHour = oneMinute * 60
-				const oneDay = oneHour * 24
-				const thirtySeconds = oneMinute / 2
 				const timeElapsed = now - lastFetched
 				if (timeElapsed > oneHour) {
 					console.info("Cache is stale, re-fetching data")
@@ -26,7 +28,7 @@ const Cache = {
 				} else {
 					console.log(
 						"Time until cache invalidation: " +
-							Math.round(Math.floor((oneHour - timeElapsed) / 1000 / 60)) +
+							toMinutes(oneHour - timeElapsed) +
 							" minutes",
 					)
 				}
@@ -42,9 +44,16 @@ const Cache = {
 
 	setLastFetched: async function(key) {
 		try {
-			await set(`${key}__lastFetched`, Date.now())
+			await set(`lastFetched`, Date.now())
 		} catch (err) {
 			throw new Error(`Error setting lastFetched for ${key}`)
+		}
+	},
+
+	appendCacheValue: async function(key, value) {
+		const cachedValues = await this.retrieve(key)
+		if (cachedValues) {
+			await this.store(key, [...cachedValues, key])
 		}
 	},
 }

@@ -18,6 +18,10 @@ const Database = {
 		}
 	},
 
+	/**
+	 * Fetch games from Firebase. Checks IndexedDB for cached values first, and if
+	 * not found or if cache is expired, fetch new data from Firebase.
+	 */
 	fetchGames: async function() {
 		// Check IndexedDB first
 		const cachedGames = await cache.retrieve("games")
@@ -39,6 +43,10 @@ const Database = {
 		return titles
 	},
 
+	/**
+	 * Fetch players from Firebase. Checks IndexedDB for cached values first, and if
+	 * not found or if cache is expired, fetch new data from Firebase.
+	 */
 	fetchPlayers: async function() {
 		// Check IndexedDB first
 		const cachedPlayers = await cache.retrieve("players")
@@ -59,11 +67,17 @@ const Database = {
 		return names
 	},
 
+	/**
+	 * Fetch results from Firebase, returned as an array of objects.
+	 */
 	fetchResults: async function() {
 		const results = await this.getCollectionAsArray("result")
 		return results
 	},
 
+	/**
+	 * Save a game result to Firebase.
+	 */
 	saveGameResult: async function(result) {
 		if (!result) return
 
@@ -80,6 +94,9 @@ const Database = {
 		}
 	},
 
+	/**
+	 * Save a new game to Firebase.
+	 */
 	saveNewGame: async function(gameTitle) {
 		if (!gameTitle) return
 
@@ -90,10 +107,8 @@ const Database = {
 				.collection("games")
 				.add(game)
 
-			const cachedGames = await cache.retrieve("games")
-			if (cachedGames) {
-				await cache.store("games", [...cachedGames, game.title])
-			}
+			// add game to indexeddb cache so its displayed before cache expiration
+			await cache.appendCacheValue("games", game.title)
 		} catch (err) {
 			throw new Error(
 				`An error occurred adding ${game.title} as a new game in Firebase`,
@@ -102,6 +117,9 @@ const Database = {
 		}
 	},
 
+	/**
+	 * Save a new player to Firebase.
+	 */
 	saveNewPlayer: async function(playerName) {
 		if (!playerName) return
 
@@ -112,10 +130,8 @@ const Database = {
 				.collection("players")
 				.add(player)
 
-			const cachedPlayers = await cache.retrieve("players")
-			if (cachedPlayers) {
-				await cache.store("players", [...cachedPlayers, player.name])
-			}
+			// add player to indexeddb cache so its displayed before cache expiration
+			await cache.appendCacheValue("players", player.name)
 		} catch (err) {
 			throw new Error(
 				`An error occurred adding ${player.name} as a new player in Firebase`,
