@@ -34,6 +34,7 @@ const Database = {
 
 		// save to IndexedDB
 		await cache.store("games", titles)
+		await cache.setLastFetched("games")
 
 		return titles
 	},
@@ -42,18 +43,18 @@ const Database = {
 		// Check IndexedDB first
 		const cachedPlayers = await cache.retrieve("players")
 		if (!!cachedPlayers) {
-			console.log("Using cache for players", cachedPlayers)
+			console.info("Using cache for players", cachedPlayers)
 			return cachedPlayers
-		} else {
-			console.log("Fetching players from Firebase...")
 		}
 
 		// Otherwise, fetch from Firebase
+		console.info("Fetching players from Firebase...")
 		const players = await this.getCollectionAsArray("players")
 		const names = players.map((player) => player && player.name)
 
 		// save to IndexedDB
 		await cache.store("players", names)
+		await cache.setLastFetched("players")
 
 		return names
 	},
