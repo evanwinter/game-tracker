@@ -29,10 +29,11 @@ module.exports = {
 			options: {
 				alias: {
 					"@components": "src/components",
-					"@utils": "src/core/services/utils.js",
+					"@utils": "src/core/services/utilities.js",
 					"@types": "src/core/state/types.js",
+					"@actions": "src/core/state/actions.js",
 					"@styles": "src/styles",
-					"@data": "sample-data/data.js",
+					"@database": "src/core/services/database.js",
 				},
 				extensions: ["js", "scss"],
 			},
@@ -55,51 +56,20 @@ module.exports = {
 			},
 		},
 
-		// Source data from Firebase (Firestore)
+		// Firebase plugin
 		{
-			resolve: "gatsby-source-firestore",
+			resolve: "gatsby-plugin-firebase",
 			options: {
-				credential: {
-					type: "service_account",
-					project_id: "game-tracker-58601",
-					private_key_id: process.env.GATSBY_FIRESTORE_PRIVATE_KEY_ID,
-					private_key: process.env.GATSBY_FIRESTORE_PRIVATE_KEY,
-					client_email:
-						"firebase-adminsdk-6txjh@game-tracker-58601.iam.gserviceaccount.com",
-					client_id: "103258949462293301450",
-					auth_uri: "https://accounts.google.com/o/oauth2/auth",
-					token_uri: "https://oauth2.googleapis.com/token",
-					auth_provider_x509_cert_url:
-						"https://www.googleapis.com/oauth2/v1/certs",
-					client_x509_cert_url:
-						"https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-6txjh%40game-tracker-58601.iam.gserviceaccount.com",
+				credentials: {
+					apiKey: process.env.GATSBY_FIREBASE_API_KEY,
+					authDomain: "game-tracker-58601.firebaseapp.com",
+					databaseURL: "https://game-tracker-58601.firebaseio.com",
+					projectId: "game-tracker-58601",
+					storageBucket: "game-tracker-58601.appspot.com",
+					messagingSenderId: "545153584949",
+					appId: "1:545153584949:web:1b8c3f1fb5c1734b1f067c",
+					measurementId: "G-2NPZF7FPSV",
 				},
-				types: [
-					{
-						type: "Game",
-						collection: "games",
-						map: (doc) => ({
-							title: doc.title,
-						}),
-					},
-					{
-						type: "Player",
-						collection: "players",
-						map: (doc) => ({
-							name: doc.name,
-						}),
-					},
-					{
-						type: "Result",
-						collection: "results",
-						map: (doc) => ({
-							title: doc.title,
-							players: doc.players,
-							winner: doc.winner,
-							timestamp: doc.timestamp,
-						}),
-					},
-				],
 			},
 		},
 	],

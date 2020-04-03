@@ -15,19 +15,23 @@
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
   },
   "dependencies": {
+    "firebase": "^7.13.2",
     "gatsby": "^2.20.10",
     "gatsby-plugin-alias-imports": "^1.0.5",
+    "gatsby-plugin-firebase": "^0.2.0-beta.4",
     "gatsby-plugin-layout": "^1.2.1",
     "gatsby-plugin-manifest": "^2.3.3",
     "gatsby-plugin-offline": "^3.1.2",
     "gatsby-plugin-react-redux": "^1.1.0-0",
     "gatsby-plugin-sass": "^2.2.1",
-    "gatsby-source-firestore": "^1.0.3",
+    "idb-keyval": "^3.2.0",
     "node-sass": "^4.13.1",
     "react": "^16.13.1",
+    "react-anime": "^3.0.3",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.0",
-    "redux": "^4.0.5"
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "prettier": "^1.19.1",
