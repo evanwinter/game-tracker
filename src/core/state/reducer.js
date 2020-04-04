@@ -154,11 +154,8 @@ const reducer = (state = initialState, action) => {
 		return {
 			...state,
 			modal: {
+				...state.modal,
 				show: false,
-				content: {
-					headline: "",
-					body: "",
-				},
 			},
 		}
 	}

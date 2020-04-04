@@ -2,18 +2,13 @@ import React from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { RefreshCw, Award, User, Clock, Box, CheckCircle } from "react-feather"
 import IconButton from "@components/IconButton"
-import T from "@types"
-import database from "@database"
 import { forUi } from "@utils"
+import Actions from "@actions"
 import "./styles.scss"
 
 const CloseButton = ({ label = "Okay" }) => {
 	const dispatch = useDispatch()
-	const closeModal = () => {
-		dispatch({
-			type: T.CLOSE_MODAL,
-		})
-	}
+	const closeModal = () => dispatch(Actions.closeModal())
 	return (
 		<>
 			<button onClick={closeModal}>{label}</button>
@@ -21,11 +16,11 @@ const CloseButton = ({ label = "Okay" }) => {
 	)
 }
 
-const SuccessMessage = () => {
+const SuccessMessage = ({ data }) => {
 	return <p>Successfully saved game result to the database.</p>
 }
 
-const ErrorMessage = () => {
+const ErrorMessage = ({ error }) => {
 	return <p>An error occurred saving game result to the database.</p>
 }
 
@@ -44,42 +39,38 @@ const Review = () => {
 		}
 
 		try {
-			await database.saveGameResult(result)
-			dispatch({
-				type: T.SHOW_MODAL,
-				headline: "Success",
-				body: (
+			await dispatch(Actions.saveGameResult(result))
+			dispatch(
+				Actions.showModal(
+					"Success",
 					<>
-						<SuccessMessage />
+						<SuccessMessage data={result} />
 						<CloseButton />
-					</>
+					</>,
 				),
-			})
+			)
+
 			setTimeout(() => {
-				dispatch({
-					type: T.RESTART,
-				})
+				restart()
 			}, 500)
 		} catch (err) {
-			dispatch({
-				type: T.SHOW_MODAL,
-				headline: "Error",
-				body: (
+			dispatch(
+				Actions.showModal(
+					"Error",
 					<>
-						<ErrorMessage />
+						<ErrorMessage error={err} />
 						<CloseButton />
-					</>
+					</>,
 				),
-			})
+			)
+
 			setTimeout(() => {
-				dispatch({
-					type: T.RESTART,
-				})
+				restart()
 			}, 500)
 		}
 	}
 
-	const handleRestart = () => dispatch({ type: T.RESTART })
+	const restart = () => dispatch(Actions.restart())
 
 	return (
 		<div className="Review">
@@ -107,7 +98,7 @@ const Review = () => {
 				<div className="Review__item">{humanFriendlyTime}</div>
 			</div>
 			<div className="Review__buttons">
-				<IconButton label={"Start Over"} onClick={handleRestart}>
+				<IconButton label={"Start Over"} onClick={restart}>
 					<RefreshCw width={16} />
 				</IconButton>
 				<IconButton

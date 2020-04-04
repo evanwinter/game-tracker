@@ -1,8 +1,8 @@
-import React, { useRef, useState } from "react"
+import React, { useRef } from "react"
+import Anime from "react-anime"
 import { useDispatch, useSelector } from "react-redux"
 import { Plus } from "react-feather"
-import database from "@database"
-import Actions from "../../core/state/actions"
+import Actions from "@actions"
 import { forUi } from "@utils"
 
 import T from "@types"
@@ -12,39 +12,42 @@ import "./styles.scss"
 const AddItemForm = ({ dataKey }) => {
 	const dispatch = useDispatch()
 	const inputRef = useRef(undefined)
-	const [value, setValue] = useState("")
 	const singleType = dataKey.substr(0, dataKey.length - 1)
 
-	const handleChange = () => {
-		setValue(inputRef.current.value)
+	const handleChange = (e) => {
+		const { value } = e.currentTarget
+		inputRef.current.value = value
 	}
 
-	const handleSubmit = async (e) => {
+	const handleSubmit = (e) => {
 		e.preventDefault()
-		database.saveNewItem(dataKey, value)
-		dispatch({
-			type: T.SAVE_NEW_ITEM,
-			dataKey: dataKey,
-			value: value,
-		})
+		const value = inputRef.current
+		if (value && value.length > 0) {
+			dispatch(Actions.saveNewItem(dataKey, value))
+			inputRef.current.value = ""
+			closeModal()
+		}
 	}
 
-	const closeModal = () => dispatch({ type: T.CLOSE_MODAL })
+	const closeModal = () => dispatch(Actions.closeModal())
 
 	return (
 		<form className="AddItemForm" onSubmit={handleSubmit}>
-			{/* <label htmlFor={`add-${singleType}`}>Add a {singleType}</label> */}
 			<div className="input-group">
-				<input
-					onChange={handleChange}
-					value={value}
-					ref={inputRef}
-					id={`add-${singleType}`}
-					type="text"
-				/>
-				<IconButton htmlType={"submit"} onClick={handleSubmit}>
-					<Plus width={16} />
-				</IconButton>
+				<Anime
+					width={["0", "100%"]}
+					opacity={[0, 100]}
+					duration={500}
+					easing={"easeInQuint"}
+					delay={150}>
+					<input
+						onChange={handleChange}
+						ref={inputRef}
+						placeholder={`e.g. ${singleType === "game" ? "Banagrams" : "Jane"}`}
+						id={`add-${singleType}`}
+						type="text"
+					/>
+				</Anime>
 			</div>
 			<div style={{ margin: `1rem 0` }}>
 				<button onClick={closeModal}>Close</button>
@@ -58,23 +61,23 @@ const AddItemButton = ({ dataKey }) => {
 	const { step } = useSelector((state) => state.general)
 	const singleType = dataKey.substr(0, dataKey.length - 1)
 
-	const handleClick = () => {
-		dispatch({
-			type: T.SHOW_MODAL,
-			headline: `Add a new ${forUi(singleType)}`,
-			body: <AddItemForm dataKey={dataKey} />,
-		})
-	}
+	const usesAddButton = (step) =>
+		[T.STEP_CHOOSING_GAME, T.STEP_CHOOSING_PLAYERS].includes(step)
 
-	const stepAllowsAdd = (step) => {
-		return [T.STEP_CHOOSING_GAME, T.STEP_CHOOSING_PLAYERS].includes(step)
+	const handleClick = () => {
+		dispatch(
+			Actions.showModal(
+				`Add a new ${forUi(singleType)}`,
+				<AddItemForm dataKey={dataKey} />,
+			),
+		)
 	}
 
 	return (
 		<div className="AddItemButton">
 			<IconButton
 				round={true}
-				disabled={!stepAllowsAdd(step)}
+				disabled={!usesAddButton(step)}
 				onClick={handleClick}
 				iconLeft={true}>
 				<Plus width={24} />

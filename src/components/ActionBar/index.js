@@ -6,6 +6,7 @@ import T from "@types"
 import IconButton from "@components/IconButton"
 import AddItemButton from "@components/AddItemButton"
 import "./styles.scss"
+import Actions from "../../core/state/actions"
 
 const ActionBar = () => {
 	const { step } = useSelector((state) => state.general)
@@ -40,10 +41,7 @@ const BackButton = ({ step }) => {
 
 	const prev = () => {
 		if (prevStep && !outOfBounds) {
-			dispatch({
-				type: T.SET_STEP,
-				nextStep: prevStep,
-			})
+			dispatch(Actions.prevStep(prevStep))
 		}
 	}
 
@@ -60,7 +58,7 @@ const BackButton = ({ step }) => {
 
 const NextButton = ({ step }) => {
 	const dispatch = useDispatch()
-	const { game, players } = useSelector((state) => state.session)
+	const { players } = useSelector((state) => state.session)
 
 	const nextIndex = T.STEPS_ORDERED.indexOf(step) + 1
 	const nextStep = T.STEPS_ORDERED[nextIndex]
@@ -68,16 +66,13 @@ const NextButton = ({ step }) => {
 
 	const next = () => {
 		if (nextStep && !outOfBounds) {
-			dispatch({
-				type: T.SET_STEP,
-				nextStep: nextStep,
-			})
+			dispatch(Actions.nextStep(nextStep))
 		}
 	}
 
-	const nextDataIsReady = (step) => {
+	const isReady = (step) => {
 		if (step === T.STEP_CHOOSING_GAME) {
-			return game.length > 0
+			return false
 		}
 		if (step === T.STEP_CHOOSING_PLAYERS) {
 			return players.length > 1
@@ -87,7 +82,7 @@ const NextButton = ({ step }) => {
 	return (
 		<IconButton
 			classNames={["NextButton"]}
-			disabled={!nextDataIsReady(step) || outOfBounds}
+			disabled={!isReady(step) || outOfBounds}
 			onClick={next}
 			round={true}>
 			<ArrowRight width={24} />

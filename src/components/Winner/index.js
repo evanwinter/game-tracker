@@ -1,6 +1,6 @@
 import React from "react"
 import { useSelector, useDispatch } from "react-redux"
-import T from "@types"
+import Actions from "@actions"
 import AnimatedList from "@components/AnimatedList"
 
 const Winner = () => {
@@ -9,11 +9,7 @@ const Winner = () => {
 
 	const handleClick = (e) => {
 		const { id } = e.currentTarget.dataset
-		dispatch({
-			type: T.SET_WINNER,
-			winner: id,
-			nextStep: T.STEP_REVIEWING_SUBMISSION,
-		})
+		dispatch(Actions.setWinner(id))
 	}
 
 	return (

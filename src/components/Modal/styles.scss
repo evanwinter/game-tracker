@@ -32,8 +32,12 @@
 
 	&__container {
 		margin: 0 auto;
-		width: 80%;
+		width: 90%;
+		max-width: $breakpoint-sm;
 		min-height: 30vh;
+		@include larger-than(sm) {
+			min-height: 50vh;
+		}
 		display: flex;
 		flex-direction: column;
 		justify-content: center;

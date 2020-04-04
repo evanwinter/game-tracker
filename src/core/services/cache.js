@@ -1,61 +1,55 @@
 import { get, set } from "idb-keyval"
 
-const toMinutes = (ms) => Math.round(Math.floor(ms / 1000 / 60))
 const oneMinute = 1000 * 60
 const oneHour = oneMinute * 60
-// const oneDay = oneHour * 24
-// const thirtySeconds = oneMinute / 2
 
 const Cache = {
 	lifespan: oneHour,
 
-	store: async function(key, val) {
+	set: async function(key, val) {
 		try {
 			await set(key, val)
 		} catch (err) {
-			throw new Error(`Error occurred setting data to key: ${key} in IndexedDB`)
+			throw Error(`Error occurred setting data to key: ${key} in IndexedDB`)
 		}
 	},
 
-	retrieve: async function(key) {
+	get: async function(key) {
 		try {
-			// Check if the cached value is stale (set over 30 seconds ago for now)
-			const lastFetched = await get(`lastFetched`)
-			if (lastFetched) {
-				const now = Date.now()
-				const timeElapsed = now - lastFetched
-				if (timeElapsed > this.lifespan) {
-					// console.info("Cache is stale, re-fetching data")
-					return false
-				} else {
-					// console.log(
-					// 	"Time until cache invalidation: " +
-					// 		toMinutes(this.lifespan - timeElapsed) +
-					// 		" minutes",
-					// )
-				}
-			}
-
 			return await get(key)
 		} catch (err) {
-			throw new Error(
-				`Error occurred retrieving IndexedDB data for key: ${key}`,
-			)
+			throw Error(`Error occurred retrieving IndexedDB data for key: ${key}`)
 		}
 	},
 
-	setLastFetched: async function(key) {
+	setLastFetched: async function() {
 		try {
-			await set(`lastFetched`, Date.now())
+			const timeNow = Date.now()
+			await set(`lastFetched`, timeNow)
 		} catch (err) {
-			throw new Error(`Error setting lastFetched for ${key}`)
+			throw Error(`Error setting lastFetched`)
+		}
+	},
+
+	isStale: async function() {
+		try {
+			const lastFetched = await get("lastFetched")
+			if (!lastFetched) return true
+
+			const timeNow = Date.now()
+			const timeElapsed = timeNow - lastFetched
+			const cacheIsStale = timeElapsed > this.lifespan
+
+			return cacheIsStale
+		} catch (err) {
+			throw Error(`Error checking if the cache is stale`)
 		}
 	},
 
 	appendCacheValue: async function(key, value) {
-		const cachedValues = await this.retrieve(key)
+		const cachedValues = await this.get(key)
 		if (cachedValues) {
-			await this.store(key, [...cachedValues, value])
+			await this.set(key, [...cachedValues, value])
 		}
 	},
 }

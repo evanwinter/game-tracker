@@ -13,7 +13,7 @@ const Button = ({ id, parentClickHandler, dataKey, multiSelect = false }) => {
 
 	useEffect(() => {
 		if (items && multiSelect) setIsSelected(items.includes(id))
-	}, [items])
+	}, [items, multiSelect, id])
 
 	return (
 		<button data-id={id} data-is-selected={isSelected} onClick={handleClick}>

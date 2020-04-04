@@ -1,7 +1,6 @@
 import React, { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import T from "@types"
-import database from "@database"
+import Actions from "@actions"
 import AnimatedList from "@components/AnimatedList"
 
 const Games = () => {
@@ -10,25 +9,15 @@ const Games = () => {
 
 	const handleClick = (e) => {
 		const { id } = e.currentTarget.dataset
-		dispatch({
-			type: T.SET_GAME,
-			game: id,
-			nextStep: T.STEP_CHOOSING_PLAYERS,
-		})
+		dispatch(Actions.setGame(id))
 	}
 
 	useEffect(() => {
 		const loadGames = async () => {
-			const games = await database.fetchGames()
-			if (!games || games.length < 1) return
-
-			dispatch({
-				type: T.LOAD_GAMES,
-				games: games,
-			})
+			await dispatch(Actions.loadGames())
 		}
 
-		if (!games || games.length === 0) {
+		if (!games || games.length < 1) {
 			loadGames()
 		}
 	}, [dispatch, games])

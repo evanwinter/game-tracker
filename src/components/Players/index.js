@@ -1,7 +1,6 @@
 import React, { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import T from "@types"
-import database from "@database"
+import Actions from "@actions"
 import AnimatedList from "@components/AnimatedList"
 
 const Players = () => {
@@ -10,21 +9,12 @@ const Players = () => {
 
 	const handleClick = (e) => {
 		const { id, isSelected } = e.currentTarget.dataset
-		dispatch({
-			type: JSON.parse(isSelected) === true ? T.REMOVE_PLAYER : T.ADD_PLAYER,
-			player: id,
-		})
+		dispatch(Actions.selectPlayer(id, isSelected))
 	}
 
 	useEffect(() => {
 		const loadPlayers = async () => {
-			const players = await database.fetchPlayers()
-			if (!players || players.length < 1) return
-
-			dispatch({
-				type: T.LOAD_PLAYERS,
-				players: players,
-			})
+			await dispatch(Actions.loadPlayers())
 		}
 
 		if (!players || players.length === 0) {

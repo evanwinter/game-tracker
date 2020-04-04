@@ -1,9 +1,10 @@
 import firebase from "gatsby-plugin-firebase"
 import { forDb } from "@utils"
-import cache from "./cache"
+import T from "@types"
+import Cache from "./cache"
 
 const Database = {
-	getCollectionAsArray: async function(collection) {
+	getCollection: async function(collection) {
 		let arr = []
 
 		try {
@@ -12,9 +13,9 @@ const Database = {
 				.collection(collection)
 				.get()
 			collectionRef.forEach((doc) => {
-				console.log(doc.data())
 				arr.push(doc.data())
 			})
+
 			return arr
 		} catch (err) {
 			throw Error("An error occurred fetching data from Firebase", err)
@@ -26,22 +27,16 @@ const Database = {
 	 * not found or if cache is expired, fetch new data from Firebase.
 	 */
 	fetchGames: async function() {
-		// Check IndexedDB first
-		const cachedGames = await cache.retrieve("games")
-		if (!!cachedGames) {
-			// console.log("Using cache for games", cachedGames)
-			return cachedGames
-		} else {
-			// console.log("Fetching games from Firebase...")
+		const cached = await this.getFromCache(T.DB_KEY_GAMES)
+		if (cached) {
+			return cached
 		}
 
-		// Otherwise, fetch from Firebase
-		const games = await this.getCollectionAsArray("games")
+		const games = await this.getCollection(T.DB_KEY_GAMES)
 		const titles = games.map((game) => game && game.title)
 
-		// save to IndexedDB
-		await cache.store("games", titles)
-		await cache.setLastFetched("games")
+		await Cache.set(T.DB_KEY_GAMES, titles)
+		await Cache.setLastFetched(T.DB_KEY_GAMES)
 
 		return titles
 	},
@@ -51,31 +46,53 @@ const Database = {
 	 * not found or if cache is expired, fetch new data from Firebase.
 	 */
 	fetchPlayers: async function() {
-		// Check IndexedDB first
-		const cachedPlayers = await cache.retrieve("players")
-		if (!!cachedPlayers) {
-			// console.info("Using cache for players", cachedPlayers)
+		const cachedPlayers = await this.getFromCache(T.DB_KEY_PLAYERS)
+		if (cachedPlayers) {
 			return cachedPlayers
 		}
 
-		// Otherwise, fetch from Firebase
-		// console.info("Fetching players from Firebase...")
-		const players = await this.getCollectionAsArray("players")
-		const names = players.map((player) => player && player.name)
+		const firebasePlayers = await this.getCollection(T.DB_KEY_PLAYERS)
+		const names = firebasePlayers.map((player) => player && player.name)
 
-		// save to IndexedDB
-		await cache.store("players", names)
-		await cache.setLastFetched("players")
+		await Cache.set(T.DB_KEY_PLAYERS, names)
+		await Cache.setLastFetched(T.DB_KEY_PLAYERS)
 
 		return names
+	},
+
+	getFromCache: async function(dataKey) {
+		const cachedItems = await Cache.get(dataKey)
+		if (cachedItems && cachedItems.length > 0) {
+			console.log(`Cached ${dataKey} found...`)
+			const cacheIsStale = await Cache.isStale()
+			if (!cacheIsStale) {
+				console.log(`Loading cached ${dataKey} into app...`)
+				return cachedItems
+			}
+
+			console.log(`Cache is stale.`)
+		}
+
+		console.log(`No cached ${dataKey} found.`)
+		console.log(`Re-fetching data from the network.`)
+		return false
 	},
 
 	/**
 	 * Fetch results from Firebase, returned as an array of objects.
 	 */
 	fetchResults: async function() {
-		const results = await this.getCollectionAsArray("result")
-		return results
+		const cachedResults = await this.getFromCache(T.DB_KEY_RESULTS)
+		if (cachedResults) {
+			return cachedResults
+		}
+
+		const firebaseResults = await this.getCollection(T.DB_KEY_RESULTS)
+
+		await Cache.set(T.DB_KEY_GAMES, firebaseResults)
+		await Cache.setLastFetched(T.DB_KEY_GAMES)
+
+		return firebaseResults
 	},
 
 	/**
@@ -97,55 +114,9 @@ const Database = {
 		}
 	},
 
-	/**
-	 * Save a new game to Firebase.
-	 */
-	saveNewGame: async function(gameTitle) {
-		if (!gameTitle) return
-
-		const game = { title: forDb(gameTitle) }
-		try {
-			await firebase
-				.firestore()
-				.collection("games")
-				.add(game)
-
-			// add game to indexeddb cache so its displayed before cache expiration
-			await cache.appendCacheValue("games", forDb(game.title))
-		} catch (err) {
-			throw new Error(
-				`An error occurred adding ${game.title} as a new game in Firebase`,
-				err,
-			)
-		}
-	},
-
-	/**
-	 * Save a new player to Firebase.
-	 */
-	saveNewPlayer: async function(playerName) {
-		if (!playerName) return
-
-		const player = { name: forDb(playerName) }
-		try {
-			await firebase
-				.firestore()
-				.collection("players")
-				.add(player)
-
-			// add player to indexeddb cache so its displayed before cache expiration
-			await cache.appendCacheValue("players", forDb(player.name))
-		} catch (err) {
-			throw new Error(
-				`An error occurred adding ${player.name} as a new player in Firebase`,
-				err,
-			)
-		}
-	},
-
 	saveNewItem: async function(dataKey, value) {
 		if (!dataKey || !value) return
-		const keys = { players: "name", games: "title" }
+		const keys = { [T.DB_KEY_PLAYERS]: "name", [T.DB_KEY_GAMES]: "title" }
 		const key = keys[dataKey]
 		const item = {
 			[key]: forDb(value),
@@ -157,7 +128,7 @@ const Database = {
 				.collection(dataKey)
 				.add(item)
 
-			await cache.appendCacheValue(dataKey, forDb(value))
+			await Cache.appendCacheValue(dataKey, forDb(value))
 		} catch (err) {
 			throw new Error(
 				`An error occurred adding ${JSON.stringify(

@@ -29,6 +29,12 @@ function Types() {
 	this.CLOSE_MODAL = "CLOSE_MODAL"
 	this.SHOW_MODAL = "SHOW_MODAL"
 
+	// Keys for Firebase and IndexedDB collections
+	this.DB_KEY_GAMES = "games"
+	this.DB_KEY_PLAYERS = "players"
+	this.DB_KEY_RESULTS = "results"
+	this.DB_KEY_LAST_FETCHED = "lastFetched"
+
 	// Order in which to display steps
 	this.STEPS_ORDERED = [
 		this.STEP_CHOOSING_GAME,
