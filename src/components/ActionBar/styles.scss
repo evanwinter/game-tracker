@@ -1,0 +1,46 @@
+@import "@styles/shared/variables.scss";
+@import "@styles/shared/mixins.scss";
+
+.ActionBar {
+	z-index: 99;
+	position: sticky;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	width: 100%;
+	background: rgba($color-light-gray, 0.6);
+	border-top: 1px solid rgba($color-light-gray, 0.26);
+	box-shadow: 0px -5px 30px 30px rgba($color-light-gray, 0.6);
+
+	display: flex;
+	justify-content: space-between;
+
+	padding: 2rem;
+	@include larger-than(sm) {
+		padding: 3rem;
+	}
+
+	&__left {
+	}
+
+	&__right {
+	}
+
+	button[disabled] {
+		opacity: 0;
+	}
+}
+
+.NextButton {
+	&:not([disabled]) {
+		background: $color-light-green;
+		border: 1px solid $color-light-green;
+		color: $color-light-gray;
+		svg {
+			color: $color-light-gray;
+		}
+	}
+}
+
+.BackButton {
+}

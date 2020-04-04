@@ -33,6 +33,10 @@ const reducer = (state = initialState, action) => {
 				...state.session,
 				game: action.game,
 			},
+			general: {
+				...state.general,
+				step: action.nextStep,
+			},
 		}
 	}
 
@@ -42,6 +46,32 @@ const reducer = (state = initialState, action) => {
 			session: {
 				...state.session,
 				players: action.players,
+			},
+			general: {
+				...state.general,
+				step: action.nextStep,
+			},
+		}
+	}
+
+	if (action.type === T.ADD_PLAYER) {
+		return {
+			...state,
+			session: {
+				...state.session,
+				players: [...state.session.players, action.player],
+			},
+		}
+	}
+
+	if (action.type === T.REMOVE_PLAYER) {
+		return {
+			...state,
+			session: {
+				...state.session,
+				players: state.session.players.filter(
+					(player) => player !== action.player,
+				),
 			},
 		}
 	}
@@ -53,6 +83,10 @@ const reducer = (state = initialState, action) => {
 				...state.session,
 				winner: action.winner,
 			},
+			general: {
+				...state.general,
+				step: action.nextStep,
+			},
 		}
 	}
 
@@ -61,7 +95,7 @@ const reducer = (state = initialState, action) => {
 			...state,
 			general: {
 				...state.general,
-				step: action.step,
+				step: action.nextStep,
 			},
 		}
 	}
@@ -106,8 +140,49 @@ const reducer = (state = initialState, action) => {
 		}
 	}
 
+	if (action.type === T.SAVE_NEW_ITEM) {
+		return {
+			...state,
+			database: {
+				...state.database,
+				[action.dataKey]: [...state.database[action.dataKey], action.value],
+			},
+		}
+	}
+
+	if (action.type === T.CLOSE_MODAL) {
+		return {
+			...state,
+			modal: {
+				show: false,
+				content: {
+					headline: "",
+					body: "",
+				},
+			},
+		}
+	}
+
+	if (action.type === T.SHOW_MODAL) {
+		return {
+			...state,
+			modal: {
+				show: true,
+				content: {
+					headline: action.headline,
+					body: action.body,
+				},
+			},
+		}
+	}
+
 	if (action.type === T.RESTART) {
-		return initialState
+		return {
+			...initialState,
+			modal: {
+				...state.modal,
+			},
+		}
 	}
 
 	return state

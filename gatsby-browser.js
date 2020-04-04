@@ -1,5 +1,6 @@
 import "firebase/app"
 import "firebase/firestore"
+import "@styles/index.scss"
 
 /**
  * Reload application when there's an updated version deployed

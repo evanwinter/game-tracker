@@ -3,10 +3,12 @@ import { get, set } from "idb-keyval"
 const toMinutes = (ms) => Math.round(Math.floor(ms / 1000 / 60))
 const oneMinute = 1000 * 60
 const oneHour = oneMinute * 60
-const oneDay = oneHour * 24
-const thirtySeconds = oneMinute / 2
+// const oneDay = oneHour * 24
+// const thirtySeconds = oneMinute / 2
 
 const Cache = {
+	lifespan: oneHour,
+
 	store: async function(key, val) {
 		try {
 			await set(key, val)
@@ -22,15 +24,15 @@ const Cache = {
 			if (lastFetched) {
 				const now = Date.now()
 				const timeElapsed = now - lastFetched
-				if (timeElapsed > oneHour) {
-					console.info("Cache is stale, re-fetching data")
+				if (timeElapsed > this.lifespan) {
+					// console.info("Cache is stale, re-fetching data")
 					return false
 				} else {
-					console.log(
-						"Time until cache invalidation: " +
-							toMinutes(oneHour - timeElapsed) +
-							" minutes",
-					)
+					// console.log(
+					// 	"Time until cache invalidation: " +
+					// 		toMinutes(this.lifespan - timeElapsed) +
+					// 		" minutes",
+					// )
 				}
 			}
 
@@ -53,7 +55,7 @@ const Cache = {
 	appendCacheValue: async function(key, value) {
 		const cachedValues = await this.retrieve(key)
 		if (cachedValues) {
-			await this.store(key, [...cachedValues, key])
+			await this.store(key, [...cachedValues, value])
 		}
 	},
 }

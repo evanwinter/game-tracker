@@ -14,6 +14,8 @@ function Types() {
 	this.SET_GAME = "SET_GAME"
 	this.SET_PLAYERS = "SET_PLAYERS"
 	this.SET_WINNER = "SET_WINNER"
+	this.ADD_PLAYER = "ADD_PLAYER"
+	this.REMOVE_PLAYER = "REMOVE_PLAYER"
 
 	// Firebase getters and setters
 	this.LOAD_GAMES = "LOAD_GAMES"
@@ -21,6 +23,11 @@ function Types() {
 	this.SAVE_NEW_GAME = "SAVE_NEW_GAME"
 	this.SAVE_NEW_PLAYER = "SAVE_NEW_PLAYER"
 	this.SAVE_NEW_GAME_RESULT = "SAVE_NEW_GAME_RESULT"
+	this.SAVE_NEW_ITEM = "SAVE_NEW_ITEM"
+
+	// Modal
+	this.CLOSE_MODAL = "CLOSE_MODAL"
+	this.SHOW_MODAL = "SHOW_MODAL"
 
 	// Order in which to display steps
 	this.STEPS_ORDERED = [

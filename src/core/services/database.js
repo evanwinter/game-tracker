@@ -11,10 +11,13 @@ const Database = {
 				.firestore()
 				.collection(collection)
 				.get()
-			collectionRef.forEach((doc) => arr.push(doc.data()))
+			collectionRef.forEach((doc) => {
+				console.log(doc.data())
+				arr.push(doc.data())
+			})
 			return arr
 		} catch (err) {
-			throw new Error("An error occurred fetching data from Firebase", err)
+			throw Error("An error occurred fetching data from Firebase", err)
 		}
 	},
 
@@ -26,10 +29,10 @@ const Database = {
 		// Check IndexedDB first
 		const cachedGames = await cache.retrieve("games")
 		if (!!cachedGames) {
-			console.log("Using cache for games", cachedGames)
+			// console.log("Using cache for games", cachedGames)
 			return cachedGames
 		} else {
-			console.log("Fetching games from Firebase...")
+			// console.log("Fetching games from Firebase...")
 		}
 
 		// Otherwise, fetch from Firebase
@@ -51,12 +54,12 @@ const Database = {
 		// Check IndexedDB first
 		const cachedPlayers = await cache.retrieve("players")
 		if (!!cachedPlayers) {
-			console.info("Using cache for players", cachedPlayers)
+			// console.info("Using cache for players", cachedPlayers)
 			return cachedPlayers
 		}
 
 		// Otherwise, fetch from Firebase
-		console.info("Fetching players from Firebase...")
+		// console.info("Fetching players from Firebase...")
 		const players = await this.getCollectionAsArray("players")
 		const names = players.map((player) => player && player.name)
 
@@ -108,7 +111,7 @@ const Database = {
 				.add(game)
 
 			// add game to indexeddb cache so its displayed before cache expiration
-			await cache.appendCacheValue("games", game.title)
+			await cache.appendCacheValue("games", forDb(game.title))
 		} catch (err) {
 			throw new Error(
 				`An error occurred adding ${game.title} as a new game in Firebase`,
@@ -131,11 +134,35 @@ const Database = {
 				.add(player)
 
 			// add player to indexeddb cache so its displayed before cache expiration
-			await cache.appendCacheValue("players", player.name)
+			await cache.appendCacheValue("players", forDb(player.name))
 		} catch (err) {
 			throw new Error(
 				`An error occurred adding ${player.name} as a new player in Firebase`,
 				err,
+			)
+		}
+	},
+
+	saveNewItem: async function(dataKey, value) {
+		if (!dataKey || !value) return
+		const keys = { players: "name", games: "title" }
+		const key = keys[dataKey]
+		const item = {
+			[key]: forDb(value),
+		}
+
+		try {
+			await firebase
+				.firestore()
+				.collection(dataKey)
+				.add(item)
+
+			await cache.appendCacheValue(dataKey, forDb(value))
+		} catch (err) {
+			throw new Error(
+				`An error occurred adding ${JSON.stringify(
+					item,
+				)} to ${dataKey} collection in Firebase`,
 			)
 		}
 	},
