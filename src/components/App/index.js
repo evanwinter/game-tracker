@@ -5,7 +5,6 @@ import Winner from "@components/Winner"
 import Review from "@components/Review"
 import Games from "@components/Games"
 import Modal from "@components/Modal"
-import Progress from "@components/Progress"
 import ActionBar from "@components/ActionBar"
 import T from "@types"
 import "./styles.scss"
@@ -22,7 +21,6 @@ const App = () => {
 
 	return (
 		<>
-			<Progress />
 			<div className="App">{stepReducer(step)}</div>
 			<ActionBar />
 			<Modal />

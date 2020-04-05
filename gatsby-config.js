@@ -34,6 +34,7 @@ module.exports = {
 					"@actions": "src/core/state/actions.js",
 					"@styles": "src/styles",
 					"@database": "src/core/services/database.js",
+					"@auth": "src/core/services/authentication.js",
 				},
 				extensions: ["js", "scss"],
 			},
@@ -69,6 +70,9 @@ module.exports = {
 					messagingSenderId: "545153584949",
 					appId: "1:545153584949:web:1b8c3f1fb5c1734b1f067c",
 					measurementId: "G-2NPZF7FPSV",
+				},
+				features: {
+					auth: true,
 				},
 			},
 		},

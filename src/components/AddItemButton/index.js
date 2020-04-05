@@ -1,18 +1,19 @@
-import React, { useRef } from "react"
-import Anime from "react-anime"
+import React, { useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { Plus } from "react-feather"
+import { Plus, AlertCircle } from "react-feather"
 import Actions from "@actions"
 import { forUi } from "@utils"
-
 import T from "@types"
 import IconButton from "@components/IconButton"
+import IconText from "@components/IconText"
 import "./styles.scss"
 
 const AddItemForm = ({ dataKey }) => {
 	const dispatch = useDispatch()
 	const inputRef = useRef(undefined)
+	const [error, setError] = useState(undefined)
 	const singleType = dataKey.substr(0, dataKey.length - 1)
+	const existingItems = useSelector((state) => state.database[dataKey])
 
 	const handleChange = (e) => {
 		const { value } = e.currentTarget
@@ -21,7 +22,13 @@ const AddItemForm = ({ dataKey }) => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault()
-		const value = inputRef.current
+		const { value } = inputRef.current
+
+		if (existingItems.includes(value.toLowerCase())) {
+			setError("This item already exists.")
+			return
+		}
+
 		if (value && value.length > 0) {
 			dispatch(Actions.saveNewItem(dataKey, value))
 			inputRef.current.value = ""
@@ -29,30 +36,39 @@ const AddItemForm = ({ dataKey }) => {
 		}
 	}
 
-	const closeModal = () => dispatch(Actions.closeModal())
+	const closeModal = () => {
+		dispatch(Actions.closeModal())
+	}
+
+	const placeholderText = `${singleType === "game" ? "Title" : "Name"}`
 
 	return (
-		<form className="AddItemForm" onSubmit={handleSubmit}>
-			<div className="input-group">
-				<Anime
-					width={["0", "100%"]}
-					opacity={[0, 100]}
-					duration={500}
-					easing={"easeInQuint"}
-					delay={150}>
+		<>
+			<form
+				className="AddItemForm"
+				data-error={error}
+				onSubmit={handleSubmit}
+				autoComplete={"off"}>
+				<div className="input-group">
 					<input
 						onChange={handleChange}
 						ref={inputRef}
-						placeholder={`e.g. ${singleType === "game" ? "Banagrams" : "Jane"}`}
+						placeholder={placeholderText}
 						id={`add-${singleType}`}
 						type="text"
 					/>
-				</Anime>
-			</div>
+				</div>
+				{error && (
+					<IconText type={"error"} size={"sm"}>
+						<AlertCircle width={16} />
+						<span>{error}</span>
+					</IconText>
+				)}
+			</form>
 			<div style={{ margin: `1rem 0` }}>
 				<button onClick={closeModal}>Close</button>
 			</div>
-		</form>
+		</>
 	)
 }
 
@@ -67,7 +83,7 @@ const AddItemButton = ({ dataKey }) => {
 	const handleClick = () => {
 		dispatch(
 			Actions.showModal(
-				`Add a new ${forUi(singleType)}`,
+				`Add ${forUi(singleType)}`,
 				<AddItemForm dataKey={dataKey} />,
 			),
 		)

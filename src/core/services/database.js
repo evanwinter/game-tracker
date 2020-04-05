@@ -18,7 +18,8 @@ const Database = {
 
 			return arr
 		} catch (err) {
-			throw Error("An error occurred fetching data from Firebase", err)
+			// throw Error("An error occurred fetching data from Firebase", err)
+			return arr
 		}
 	},
 

@@ -4,7 +4,7 @@
 	width: 100%;
 
 	.input-group {
-		margin: 1rem auto 3rem;
+		margin: 0 0 2rem;
 		> div {
 			margin: 0 auto;
 		}
@@ -19,11 +19,9 @@
 		box-shadow: none;
 		border-radius: 0px;
 
-		border-bottom: 2px solid $color-light-green;
-
 		text-align: center;
-
 		max-width: 300px;
+		border: 1px solid $color-medium-gray;
 
 		&:focus {
 			outline: none;

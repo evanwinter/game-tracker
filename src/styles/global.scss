@@ -91,6 +91,18 @@ input[type="text"] {
 	}
 }
 
+.Layout {
+	min-height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+.section-heading {
+	text-align: center;
+}
+
 .App {
 	padding: 2rem;
 	@include larger-than(sm) {

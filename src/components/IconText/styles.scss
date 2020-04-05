@@ -1,0 +1,28 @@
+@import "@styles/shared/variables";
+
+.IconText {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	span + svg,
+	svg + span {
+		margin-left: 0.5em;
+	}
+
+	svg {
+		display: block;
+  }
+
+  &[data-size="sm"] {
+    font-size: 0.85rem;
+  }
+
+  &[data-size="lg"] {
+    font-size: 1.25rem;
+  }
+  
+  &[data-type="error"] {
+    color: $color-red;
+  }
+}
