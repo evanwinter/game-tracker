@@ -20,12 +20,12 @@ const AnimatedList = ({
 				easing={"easeInOutQuad"}>
 				{items &&
 					items
-						.sort((a, b) => (a > b ? 1 : -1))
-						.map((item) => {
+						.sort((a, b) => (a.uid > b.uid ? 1 : -1))
+						.map(({ uid }) => {
 							return (
-								<li key={item}>
+								<li key={uid}>
 									<Button
-										id={item}
+										uid={uid}
 										parentClickHandler={handleClick}
 										dataKey={dataKey}
 										multiSelect={multiSelect}

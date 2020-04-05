@@ -74,7 +74,7 @@ const AppActions = {
 const SessionActions = {
 	setGame: (game) => ({
 		type: T.SET_GAME,
-		game: game,
+		game: { uid: game },
 		nextStep: T.STEP_CHOOSING_PLAYERS,
 	}),
 
@@ -86,13 +86,13 @@ const SessionActions = {
 
 	setWinner: (winner) => ({
 		type: T.SET_WINNER,
-		winner: winner,
+		winner: { uid: winner },
 		nextStep: T.STEP_REVIEWING_SUBMISSION,
 	}),
 
 	selectPlayer: (player, isSelected) => ({
 		type: JSON.parse(isSelected) === true ? T.REMOVE_PLAYER : T.ADD_PLAYER,
-		player: player,
+		player: { uid: player },
 	}),
 }
 

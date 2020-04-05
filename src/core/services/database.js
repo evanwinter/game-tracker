@@ -5,85 +5,83 @@ import Cache from "./cache"
 
 const Database = {
 	getCollection: async function(collection) {
-		let arr = []
+		if (!collection)
+			throw Error(
+				'Database.getCollection() is missing a required argument: collection="", item={}',
+			)
 
 		try {
+			const items = []
 			const collectionRef = await firebase
 				.firestore()
 				.collection(collection)
 				.get()
 			collectionRef.forEach((doc) => {
-				arr.push(doc.data())
+				items.push(doc.data())
 			})
-
-			return arr
+			return items
 		} catch (err) {
-			// throw Error("An error occurred fetching data from Firebase", err)
-			return arr
+			throw Error(`Error fetching ${collection} collection from Firebase`, err)
+		}
+	},
+
+	addToCollection: async function(collection, item) {
+		if (!collection || !item)
+			throw Error(
+				'Database.addToCollection() is missing one or more required arguments: collection="", item={}',
+			)
+
+		try {
+			await firebase
+				.firestore()
+				.collection(collection)
+				.add(item)
+
+			await Cache.updateArrValue(collection, forDb(item))
+		} catch (err) {
+			throw new Error(
+				`An error occurred adding item to ${collection} collection in Firebase`,
+				err,
+			)
 		}
 	},
 
 	/**
-	 * Fetch games from Firebase. Checks IndexedDB for cached values first, and if
-	 * not found or if cache is expired, fetch new data from Firebase.
+	 * Fetch games - cache first, then Firebase
 	 */
 	fetchGames: async function() {
-		const cached = await this.getFromCache(T.DB_KEY_GAMES)
-		if (cached) {
-			return cached
-		}
+		const cachedGames = await Cache.loadFromCache(T.DB_KEY_GAMES)
+		if (cachedGames) return cachedGames
 
-		const games = await this.getCollection(T.DB_KEY_GAMES)
-		const titles = games.map((game) => game && game.title)
+		const firebaseGames = await this.getCollection(T.DB_KEY_GAMES)
 
-		await Cache.set(T.DB_KEY_GAMES, titles)
+		await Cache.set(T.DB_KEY_GAMES, firebaseGames)
 		await Cache.setLastFetched(T.DB_KEY_GAMES)
 
-		return titles
+		return firebaseGames
 	},
 
 	/**
-	 * Fetch players from Firebase. Checks IndexedDB for cached values first, and if
-	 * not found or if cache is expired, fetch new data from Firebase.
+	 * Fetch players - cache first, then Firebase
 	 */
 	fetchPlayers: async function() {
-		const cachedPlayers = await this.getFromCache(T.DB_KEY_PLAYERS)
-		if (cachedPlayers) {
-			return cachedPlayers
-		}
+		const cachedPlayers = await Cache.loadFromCache(T.DB_KEY_PLAYERS)
+		if (cachedPlayers) return cachedPlayers
 
 		const firebasePlayers = await this.getCollection(T.DB_KEY_PLAYERS)
-		const names = firebasePlayers.map((player) => player && player.name)
 
-		await Cache.set(T.DB_KEY_PLAYERS, names)
+		await Cache.set(T.DB_KEY_PLAYERS, firebasePlayers)
 		await Cache.setLastFetched(T.DB_KEY_PLAYERS)
 
-		return names
-	},
-
-	getFromCache: async function(dataKey) {
-		const cachedItems = await Cache.get(dataKey)
-		if (cachedItems && cachedItems.length > 0) {
-			console.log(`Cached ${dataKey} found...`)
-			const cacheIsStale = await Cache.isStale()
-			if (!cacheIsStale) {
-				console.log(`Loading cached ${dataKey} into app...`)
-				return cachedItems
-			}
-
-			console.log(`Cache is stale.`)
-		}
-
-		console.log(`No cached ${dataKey} found.`)
-		console.log(`Re-fetching data from the network.`)
-		return false
+		return firebasePlayers
 	},
 
 	/**
-	 * Fetch results from Firebase, returned as an array of objects.
+	 * Fetch players - cache first, then Firebase
+	 * (Note: Currently unused, but will be used for viewing all-time data)
 	 */
 	fetchResults: async function() {
-		const cachedResults = await this.getFromCache(T.DB_KEY_RESULTS)
+		const cachedResults = await Cache.loadFromCache(T.DB_KEY_RESULTS)
 		if (cachedResults) {
 			return cachedResults
 		}
@@ -97,7 +95,7 @@ const Database = {
 	},
 
 	/**
-	 * Save a game result to Firebase.
+	 * Save a game result to Firebase
 	 */
 	saveGameResult: async function(result) {
 		if (!result) return
@@ -115,13 +113,16 @@ const Database = {
 		}
 	},
 
-	saveNewItem: async function(dataKey, value) {
-		if (!dataKey || !value) return
-		const keys = { [T.DB_KEY_PLAYERS]: "name", [T.DB_KEY_GAMES]: "title" }
-		const key = keys[dataKey]
-		const item = {
-			[key]: forDb(value),
-		}
+	/**
+	 * Save a new item to Firebase (game or player for now)
+	 */
+	saveNewItem: async function(dataKey, uid) {
+		if (!dataKey || !uid)
+			throw Error(
+				`Database.saveNewItem() is missing one or more required arguments: dataKey="", uid=""`,
+			)
+
+		const item = { uid: forDb(uid) }
 
 		try {
 			await firebase
@@ -129,7 +130,7 @@ const Database = {
 				.collection(dataKey)
 				.add(item)
 
-			await Cache.appendCacheValue(dataKey, forDb(value))
+			await Cache.updateArrValue(dataKey, item)
 		} catch (err) {
 			throw new Error(
 				`An error occurred adding ${JSON.stringify(

@@ -31,6 +31,34 @@ const Cache = {
 		}
 	},
 
+	/**
+	 * Load data from cache. Returns the cached value for the
+	 * data key (games or players for now), or `false` if not found
+	 */
+	loadFromCache: async function(dataKey) {
+		const cachedItems = await this.get(dataKey)
+		if (cachedItems && cachedItems.length > 0) {
+			console.log(`Cached ${dataKey} found...`)
+			const cacheIsStale = await this.isStale()
+			if (!cacheIsStale) {
+				console.log(`Loading cached ${dataKey} into app...`)
+				return cachedItems
+			}
+
+			console.log(`Cache is stale.`)
+		}
+
+		console.log(`No cached ${dataKey} found.`)
+		console.log(`Re-fetching data from the network.`)
+
+		return false
+	},
+
+	/**
+	 * Return a boolean representing whether or not the cache is stale.
+	 * Compare `lastFetched` in IndexedDB to the current time; return true
+	 * if the difference is greater than `this.lifespan`
+	 */
 	isStale: async function() {
 		try {
 			const lastFetched = await get("lastFetched")
@@ -46,7 +74,10 @@ const Cache = {
 		}
 	},
 
-	appendCacheValue: async function(key, value) {
+	/**
+	 * Add an item to an array in IndexedDB
+	 */
+	updateArrValue: async function(key, value) {
 		const cachedValues = await this.get(key)
 		if (cachedValues) {
 			await this.set(key, [...cachedValues, value])

@@ -16,11 +16,11 @@ const CloseButton = ({ label = "Okay" }) => {
 	)
 }
 
-const SuccessMessage = ({ data }) => {
+const SuccessMessage = () => {
 	return <p>Successfully saved game result to the database.</p>
 }
 
-const ErrorMessage = ({ error }) => {
+const ErrorMessage = () => {
 	return <p>An error occurred saving game result to the database.</p>
 }
 
@@ -32,10 +32,10 @@ const Review = () => {
 
 	const handleSubmit = async () => {
 		const result = {
-			game,
-			players,
-			winner,
-			time,
+			game: game.uid,
+			players: players.map((player) => player.uid),
+			winner: winner.uid,
+			time: time,
 		}
 
 		try {
@@ -44,7 +44,7 @@ const Review = () => {
 				Actions.showModal(
 					"Success",
 					<>
-						<SuccessMessage data={result} />
+						<SuccessMessage />
 						<CloseButton />
 					</>,
 				),
@@ -58,7 +58,7 @@ const Review = () => {
 				Actions.showModal(
 					"Error",
 					<>
-						<ErrorMessage error={err} />
+						<ErrorMessage />
 						<CloseButton />
 					</>,
 				),
@@ -80,17 +80,19 @@ const Review = () => {
 					<span>Game</span>
 					<Box width={16} />
 				</div>
-				<div className="Review__item">{forUi(game)}</div>
+				<div className="Review__item">{forUi(game.uid)}</div>
 				<div className="Review__item label">
 					<span>Players</span>
 					<User width={16} />
 				</div>
-				<div className="Review__item">{forUi(players.join(", "))}</div>
+				<div className="Review__item">
+					{forUi(players.map((player) => player.uid).join(", "))}
+				</div>
 				<div className="Review__item label">
 					<span>Winner</span>
 					<Award width={16} />
 				</div>
-				<div className="Review__item">{forUi(winner)}</div>
+				<div className="Review__item">{forUi(winner.uid)}</div>
 				<div className="Review__item label">
 					<span>Time</span>
 					<Clock width={16} />

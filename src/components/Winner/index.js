@@ -8,8 +8,8 @@ const Winner = () => {
 	const { players } = useSelector((state) => state.session)
 
 	const handleClick = (e) => {
-		const { id } = e.currentTarget.dataset
-		dispatch(Actions.setWinner(id))
+		const { uid } = e.currentTarget.dataset
+		dispatch(Actions.setWinner(uid))
 	}
 
 	return (

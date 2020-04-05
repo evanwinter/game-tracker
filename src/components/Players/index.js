@@ -8,8 +8,9 @@ const Players = () => {
 	const { players } = useSelector((state) => state.database)
 
 	const handleClick = (e) => {
-		const { id, isSelected } = e.currentTarget.dataset
-		dispatch(Actions.selectPlayer(id, isSelected))
+		const { uid, isSelected } = e.currentTarget.dataset
+		console.log(uid, isSelected)
+		dispatch(Actions.selectPlayer(uid, isSelected))
 	}
 
 	useEffect(() => {

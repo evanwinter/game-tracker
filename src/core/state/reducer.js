@@ -70,7 +70,7 @@ const reducer = (state = initialState, action) => {
 			session: {
 				...state.session,
 				players: state.session.players.filter(
-					(player) => player !== action.player,
+					(player) => player.uid !== action.player.uid,
 				),
 			},
 		}

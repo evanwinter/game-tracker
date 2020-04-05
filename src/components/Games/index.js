@@ -8,8 +8,8 @@ const Games = () => {
 	const { games } = useSelector((state) => state.database)
 
 	const handleClick = (e) => {
-		const { id } = e.currentTarget.dataset
-		dispatch(Actions.setGame(id))
+		const { uid } = e.currentTarget.dataset
+		dispatch(Actions.setGame(uid))
 	}
 
 	useEffect(() => {

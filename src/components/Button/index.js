@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { forUi } from "@utils"
 
-const Button = ({ id, parentClickHandler, dataKey, multiSelect = false }) => {
+const Button = ({ uid, parentClickHandler, dataKey, multiSelect = false }) => {
 	const items = useSelector((state) => state.session[dataKey])
 	const [isSelected, setIsSelected] = useState(false)
 
@@ -12,12 +12,13 @@ const Button = ({ id, parentClickHandler, dataKey, multiSelect = false }) => {
 	}
 
 	useEffect(() => {
-		if (items && multiSelect) setIsSelected(items.includes(id))
-	}, [items, multiSelect, id])
+		const thisIsSelected = items && !!items.find((item) => item.uid === uid)
+		if (items && multiSelect) setIsSelected(thisIsSelected)
+	}, [items, multiSelect, uid])
 
 	return (
-		<button data-id={id} data-is-selected={isSelected} onClick={handleClick}>
-			{forUi(id)}
+		<button data-uid={uid} data-is-selected={isSelected} onClick={handleClick}>
+			{forUi(uid)}
 		</button>
 	)
 }
