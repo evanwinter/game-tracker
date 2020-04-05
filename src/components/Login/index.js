@@ -25,7 +25,7 @@ const Login = () => {
 
 	return (
 		<>
-			{firebase && (
+			{typeof window !== "undefined" && firebase && (
 				<StyledFirebaseAuth
 					uiConfig={getUiConfig(firebase.auth)}
 					firebaseAuth={firebase.auth()}
