@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import Actions from "@actions"
+import Actions from "@state/actions"
 import AnimatedList from "@components/AnimatedList"
 
 const Players = () => {
@@ -25,7 +25,7 @@ const Players = () => {
 
 	return (
 		<div className="Players">
-			<h1>Select Players</h1>
+			<h1>Who did you play with?</h1>
 			<p>(Select at least two players)</p>
 			<AnimatedList
 				items={players}

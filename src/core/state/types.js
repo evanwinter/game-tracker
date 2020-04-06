@@ -42,6 +42,11 @@ function Types() {
 		this.STEP_CHOOSING_WINNER,
 		this.STEP_REVIEWING_SUBMISSION,
 	]
+
+	this.STEPS_WITH_ADD = {
+		[this.STEP_CHOOSING_GAME]: this.DB_KEY_GAMES,
+		[this.STEP_CHOOSING_PLAYERS]: this.DB_KEY_PLAYERS,
+	}
 }
 
 const T = new Types()

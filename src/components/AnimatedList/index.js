@@ -1,6 +1,8 @@
 import React from "react"
 import Anime from "react-anime"
-import Button from "@components/Button"
+
+import ListItem from "@components/ListItem"
+
 import "./styles.scss"
 
 const AnimatedList = ({
@@ -10,6 +12,7 @@ const AnimatedList = ({
 	multiSelect = false,
 	maxColumns = 3,
 }) => {
+	console.log("items", items)
 	return (
 		<ul className={`AnimatedList grid grid-${maxColumns}`}>
 			<Anime
@@ -24,7 +27,7 @@ const AnimatedList = ({
 						.map(({ uid }) => {
 							return (
 								<li key={uid}>
-									<Button
+									<ListItem
 										uid={uid}
 										parentClickHandler={handleClick}
 										dataKey={dataKey}

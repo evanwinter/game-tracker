@@ -1,11 +1,10 @@
 import firebase from "gatsby-plugin-firebase"
-import { forDb } from "@utils"
-import T from "@types"
-import Cache from "./cache"
+import Cache from "@services/cache"
+import Types from "@types"
 
 const Database = {
-	getCollection: async function(collection) {
-		if (!collection)
+	getCollection: async function(dataKey) {
+		if (!dataKey)
 			throw Error(
 				'Database.getCollection() is missing a required argument: collection="", item={}',
 			)
@@ -14,19 +13,19 @@ const Database = {
 			const items = []
 			const collectionRef = await firebase
 				.firestore()
-				.collection(collection)
+				.collection(dataKey)
 				.get()
 			collectionRef.forEach((doc) => {
 				items.push(doc.data())
 			})
 			return items
 		} catch (err) {
-			throw Error(`Error fetching ${collection} collection from Firebase`, err)
+			throw Error(`Error fetching ${dataKey} collection from Firebase`, err)
 		}
 	},
 
-	addToCollection: async function(collection, item) {
-		if (!collection || !item)
+	addToCollection: async function(dataKey, item) {
+		if (!dataKey || !item)
 			throw Error(
 				'Database.addToCollection() is missing one or more required arguments: collection="", item={}',
 			)
@@ -34,13 +33,12 @@ const Database = {
 		try {
 			await firebase
 				.firestore()
-				.collection(collection)
+				.collection(dataKey)
 				.add(item)
-
-			await Cache.updateArrValue(collection, forDb(item))
 		} catch (err) {
+			console.log(err)
 			throw new Error(
-				`An error occurred adding item to ${collection} collection in Firebase`,
+				`An error occurred adding item to ${dataKey} collection in Firebase`,
 				err,
 			)
 		}
@@ -50,13 +48,13 @@ const Database = {
 	 * Fetch games - cache first, then Firebase
 	 */
 	fetchGames: async function() {
-		const cachedGames = await Cache.loadFromCache(T.DB_KEY_GAMES)
+		const cachedGames = await Cache.loadFromCache(Types.DB_KEY_GAMES)
 		if (cachedGames) return cachedGames
 
-		const firebaseGames = await this.getCollection(T.DB_KEY_GAMES)
+		const firebaseGames = await this.getCollection(Types.DB_KEY_GAMES)
 
-		await Cache.set(T.DB_KEY_GAMES, firebaseGames)
-		await Cache.setLastFetched(T.DB_KEY_GAMES)
+		await Cache.set(Types.DB_KEY_GAMES, firebaseGames)
+		await Cache.setLastFetched(Types.DB_KEY_GAMES)
 
 		return firebaseGames
 	},
@@ -65,13 +63,13 @@ const Database = {
 	 * Fetch players - cache first, then Firebase
 	 */
 	fetchPlayers: async function() {
-		const cachedPlayers = await Cache.loadFromCache(T.DB_KEY_PLAYERS)
+		const cachedPlayers = await Cache.loadFromCache(Types.DB_KEY_PLAYERS)
 		if (cachedPlayers) return cachedPlayers
 
-		const firebasePlayers = await this.getCollection(T.DB_KEY_PLAYERS)
+		const firebasePlayers = await this.getCollection(Types.DB_KEY_PLAYERS)
 
-		await Cache.set(T.DB_KEY_PLAYERS, firebasePlayers)
-		await Cache.setLastFetched(T.DB_KEY_PLAYERS)
+		await Cache.set(Types.DB_KEY_PLAYERS, firebasePlayers)
+		await Cache.setLastFetched(Types.DB_KEY_PLAYERS)
 
 		return firebasePlayers
 	},
@@ -81,15 +79,13 @@ const Database = {
 	 * (Note: Currently unused, but will be used for viewing all-time data)
 	 */
 	fetchResults: async function() {
-		const cachedResults = await Cache.loadFromCache(T.DB_KEY_RESULTS)
-		if (cachedResults) {
-			return cachedResults
-		}
+		const cachedResults = await Cache.loadFromCache(Types.DB_KEY_RESULTS)
+		if (cachedResults) return cachedResults
 
-		const firebaseResults = await this.getCollection(T.DB_KEY_RESULTS)
+		const firebaseResults = await this.getCollection(Types.DB_KEY_RESULTS)
 
-		await Cache.set(T.DB_KEY_GAMES, firebaseResults)
-		await Cache.setLastFetched(T.DB_KEY_GAMES)
+		await Cache.set(Types.DB_KEY_GAMES, firebaseResults)
+		await Cache.setLastFetched(Types.DB_KEY_GAMES)
 
 		return firebaseResults
 	},
@@ -98,19 +94,17 @@ const Database = {
 	 * Save a game result to Firebase
 	 */
 	saveGameResult: async function(result) {
-		if (!result) return
+		if (
+			!result ||
+			!result.game ||
+			!result.players.length > 0 ||
+			!result.winner ||
+			!result.time
+		)
+			return
 
-		try {
-			await firebase
-				.firestore()
-				.collection("results")
-				.add(result)
-		} catch (err) {
-			throw new Error(
-				`An error occurred adding game results (${result.game} won by ${result.winner}) to Firebase`,
-				err,
-			)
-		}
+		// add to firebase
+		await this.addToCollection(Types.DB_KEY_RESULTS, result)
 	},
 
 	/**
@@ -122,22 +116,14 @@ const Database = {
 				`Database.saveNewItem() is missing one or more required arguments: dataKey="", uid=""`,
 			)
 
-		const item = { uid: forDb(uid) }
-
-		try {
-			await firebase
-				.firestore()
-				.collection(dataKey)
-				.add(item)
-
-			await Cache.updateArrValue(dataKey, item)
-		} catch (err) {
-			throw new Error(
-				`An error occurred adding ${JSON.stringify(
-					item,
-				)} to ${dataKey} collection in Firebase`,
-			)
+		const item = {
+			uid: uid.toLowerCase(),
 		}
+
+		// add to firebase
+		await this.addToCollection(dataKey, item)
+		// and mirror in redux session data
+		await Cache.updateArrValue(dataKey, item)
 	},
 }
 

@@ -9,10 +9,10 @@ export const capitalize = (str) => {
 	return capitalizedWords.join(" ")
 }
 
-export const forDb = (str) => {
+export const dbStr = (str) => {
 	return str.toLowerCase()
 }
 
-export const forUi = (str) => {
+export const uiStr = (str) => {
 	return capitalize(str)
 }

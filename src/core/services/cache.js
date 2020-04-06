@@ -78,9 +78,14 @@ const Cache = {
 	 * Add an item to an array in IndexedDB
 	 */
 	updateArrValue: async function(key, value) {
+		console.log("Getting IDB values...")
 		const cachedValues = await this.get(key)
 		if (cachedValues) {
-			await this.set(key, [...cachedValues, value])
+			console.log("Setting IDB values...", value)
+			const nextValues = [...cachedValues, value]
+			console.log("Next values...", nextValues)
+			await this.set(key, nextValues)
+			console.log("IDB updated with new value.")
 		}
 	},
 }

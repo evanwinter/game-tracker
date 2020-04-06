@@ -1,7 +1,9 @@
 import React, { useEffect } from "react"
 import { navigate } from "@reach/router"
-import { isLoggedIn } from "@auth"
+
 import Progress from "@components/Progress"
+
+import { isLoggedIn } from "@services/authentication"
 
 const Layout = ({ children }) => {
 	useEffect(() => {

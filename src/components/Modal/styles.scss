@@ -1,60 +1,72 @@
 @import "@styles/shared/variables";
 @import "@styles/shared/mixins";
 
-.Modal {
+@mixin fixed-fullscreen() {
 	position: fixed;
 	top: 0;
 	left: 0;
 	right: 0;
+	bottom: 0;
+
 	width: 100%;
 	height: 100vh;
-	z-index: 100;
+}
 
-	// padding-bottom: 40vh;
+@mixin modal-animate-in() {
+	opacity: 0;
+	pointer-events: none;
+
+	.Modal__container {
+		opacity: 0;
+		transform: scale(0.9);
+
+		transition: opacity 250ms ease, transform 250ms ease;
+	}
+
+	&[data-show="true"] {
+		opacity: 1;
+		pointer-events: all;
+
+		.Modal__container {
+			opacity: 1;
+			transform: scale(1);
+		}
+	}
+
+	transition: opacity 250ms ease;
+}
+
+.Modal {
+	z-index: 100;
+	@include fixed-fullscreen();
+	@include modal-animate-in();
 
 	display: flex;
 	justify-content: center;
 	align-items: center;
 
-	transition: background 250ms ease, opacity 250ms ease;
-
-	&[data-show="true"] {
-		pointer-events: all;
-		opacity: 1;
-		background: rgba($color-black, 0.5);
-
-		.Modal__container {
-			transform: scale(1);
-		}
-	}
-
-	&[data-show="false"] {
-		pointer-events: none;
-		opacity: 0;
-		background: transparent;
-	}
+	background: rgba($color-black, 0.75);
 
 	&__container {
-		margin: 0 auto;
+		@include card();
+		background: $background-color;
+		box-shadow: 0px 1px 10px $color-dark-gray;
+
 		width: 90%;
 		max-width: $breakpoint-sm;
+		height: auto;
 		min-height: 30vh;
-		@include larger-than(sm) {
-			min-height: 50vh;
-		}
+
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-		transform: scale(0.8);
+
 		padding: 2rem;
-		text-align: center;
-		@include card();
-		background: $background-color;
 
-		box-shadow: 0px 1px 10px $color-dark-gray;
-
-		transition: transform 350ms ease;
+		@include larger-than(sm) {
+			min-height: 50vh;
+		}
 	}
 
 	&__close {

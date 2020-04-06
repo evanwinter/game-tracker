@@ -2,7 +2,7 @@ import React from "react"
 import firebase from "gatsby-plugin-firebase"
 import { navigate } from "@reach/router"
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth"
-import { setUser, isLoggedIn } from "@auth"
+import { setUser, isLoggedIn } from "@services/authentication"
 
 const Login = () => {
 	if (isLoggedIn()) {

@@ -1,6 +1,6 @@
 import React from "react"
 import { useSelector, useDispatch } from "react-redux"
-import Actions from "@actions"
+import Actions from "@state/actions"
 import AnimatedList from "@components/AnimatedList"
 
 const Winner = () => {
@@ -14,7 +14,7 @@ const Winner = () => {
 
 	return (
 		<div className="Winner">
-			<h1>Select the winner</h1>
+			<h1>Who won?</h1>
 			<AnimatedList
 				items={players}
 				dataKey={"players"}

@@ -13,7 +13,7 @@ const Progress = () => {
 		const progressValue = `${progress}%`
 
 		document.documentElement.style.setProperty(
-			"--progress-width",
+			"--progress-bar-width",
 			progressValue,
 		)
 	}, [step])

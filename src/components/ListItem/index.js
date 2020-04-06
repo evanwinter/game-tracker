@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
-import { forUi } from "@utils"
+import { uiStr } from "@services/utilities"
 
-const Button = ({ uid, parentClickHandler, dataKey, multiSelect = false }) => {
+const ListItem = ({
+	uid,
+	parentClickHandler,
+	dataKey,
+	multiSelect = false,
+}) => {
 	const items = useSelector((state) => state.session[dataKey])
 	const [isSelected, setIsSelected] = useState(false)
 
@@ -18,8 +23,8 @@ const Button = ({ uid, parentClickHandler, dataKey, multiSelect = false }) => {
 
 	return (
 		<button data-uid={uid} data-is-selected={isSelected} onClick={handleClick}>
-			{forUi(uid)}
+			{uiStr(uid)}
 		</button>
 	)
 }
-export default Button
+export default ListItem

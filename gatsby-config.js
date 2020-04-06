@@ -29,12 +29,11 @@ module.exports = {
 			options: {
 				alias: {
 					"@components": "src/components",
-					"@utils": "src/core/services/utilities.js",
-					"@types": "src/core/state/types.js",
-					"@actions": "src/core/state/actions.js",
 					"@styles": "src/styles",
-					"@database": "src/core/services/database.js",
-					"@auth": "src/core/services/authentication.js",
+					"@actions": "src/core/state/actions.js",
+					"@services": "src/core/services",
+					"@state": "src/core/state",
+					"@types": "src/core/state/types.js",
 				},
 				extensions: ["js", "scss"],
 			},

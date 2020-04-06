@@ -1,8 +1,9 @@
 import { createStore, applyMiddleware } from "redux"
 import logger from "redux-logger"
 import thunk from "redux-thunk"
-import reducer from "./reducer"
-import database from "@database"
+
+import reducer from "@state/reducer"
+import database from "@services/database"
 
 const middleware = [thunk.withExtraArgument(database)]
 if (process.env.NODE_ENV === "development") {

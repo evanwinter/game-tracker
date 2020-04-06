@@ -1,8 +1,8 @@
-import T from "@types"
+import Types from "@types"
 
 const initialState = {
 	general: {
-		step: T.STEP_CHOOSING_GAME,
+		step: Types.STEP_CHOOSING_GAME,
 	},
 
 	modal: {
@@ -26,7 +26,7 @@ const initialState = {
 }
 
 const reducer = (state = initialState, action) => {
-	if (action.type === T.SET_GAME) {
+	if (action.type === Types.SET_GAME) {
 		return {
 			...state,
 			session: {
@@ -40,7 +40,7 @@ const reducer = (state = initialState, action) => {
 		}
 	}
 
-	if (action.type === T.SET_PLAYERS) {
+	if (action.type === Types.SET_PLAYERS) {
 		return {
 			...state,
 			session: {
@@ -54,7 +54,7 @@ const reducer = (state = initialState, action) => {
 		}
 	}
 
-	if (action.type === T.ADD_PLAYER) {
+	if (action.type === Types.ADD_PLAYER) {
 		return {
 			...state,
 			session: {
@@ -64,7 +64,7 @@ const reducer = (state = initialState, action) => {
 		}
 	}
 
-	if (action.type === T.REMOVE_PLAYER) {
+	if (action.type === Types.REMOVE_PLAYER) {
 		return {
 			...state,
 			session: {
@@ -76,7 +76,7 @@ const reducer = (state = initialState, action) => {
 		}
 	}
 
-	if (action.type === T.SET_WINNER) {
+	if (action.type === Types.SET_WINNER) {
 		return {
 			...state,
 			session: {
@@ -90,7 +90,7 @@ const reducer = (state = initialState, action) => {
 		}
 	}
 
-	if (action.type === T.SET_STEP) {
+	if (action.type === Types.SET_STEP) {
 		return {
 			...state,
 			general: {
@@ -100,7 +100,7 @@ const reducer = (state = initialState, action) => {
 		}
 	}
 
-	if (action.type === T.LOAD_GAMES) {
+	if (action.type === Types.LOAD_GAMES) {
 		return {
 			...state,
 			database: {
@@ -110,7 +110,7 @@ const reducer = (state = initialState, action) => {
 		}
 	}
 
-	if (action.type === T.LOAD_PLAYERS) {
+	if (action.type === Types.LOAD_PLAYERS) {
 		return {
 			...state,
 			database: {
@@ -120,7 +120,7 @@ const reducer = (state = initialState, action) => {
 		}
 	}
 
-	if (action.type === T.SAVE_NEW_GAME) {
+	if (action.type === Types.SAVE_NEW_GAME) {
 		return {
 			...state,
 			database: {
@@ -130,7 +130,7 @@ const reducer = (state = initialState, action) => {
 		}
 	}
 
-	if (action.type === T.SAVE_NEW_PLAYER) {
+	if (action.type === Types.SAVE_NEW_PLAYER) {
 		return {
 			...state,
 			database: {
@@ -140,7 +140,7 @@ const reducer = (state = initialState, action) => {
 		}
 	}
 
-	if (action.type === T.SAVE_NEW_ITEM) {
+	if (action.type === Types.SAVE_NEW_ITEM) {
 		return {
 			...state,
 			database: {
@@ -150,7 +150,7 @@ const reducer = (state = initialState, action) => {
 		}
 	}
 
-	if (action.type === T.CLOSE_MODAL) {
+	if (action.type === Types.CLOSE_MODAL) {
 		return {
 			...state,
 			modal: {
@@ -160,7 +160,7 @@ const reducer = (state = initialState, action) => {
 		}
 	}
 
-	if (action.type === T.SHOW_MODAL) {
+	if (action.type === Types.SHOW_MODAL) {
 		return {
 			...state,
 			modal: {
@@ -173,7 +173,7 @@ const reducer = (state = initialState, action) => {
 		}
 	}
 
-	if (action.type === T.RESTART) {
+	if (action.type === Types.RESTART) {
 		return {
 			...initialState,
 			modal: {
