@@ -12,17 +12,13 @@
 
 	svg {
 		display: block;
-  }
+	}
 
-  &[data-size="sm"] {
-    font-size: 0.85rem;
-  }
+	&[data-size="sm"] {
+		font-size: 0.85rem;
+	}
 
-  &[data-size="lg"] {
-    font-size: 1.25rem;
-  }
-  
-  &[data-type="error"] {
-    color: $color-red;
-  }
+	&[data-size="lg"] {
+		font-size: 1.25rem;
+	}
 }

@@ -9,7 +9,10 @@ const Modal = () => {
 	const { show, content } = modal
 	const { headline, body } = content
 
-	const tryInputFocus = () => document.querySelector(".Modal input")?.focus()
+	const tryInputFocus = () => {
+		const input = document.querySelector(".Modal input")
+		if (input) input.focus()
+	}
 
 	useEffect(() => {
 		if (show) tryInputFocus()
@@ -28,8 +31,8 @@ const Modal = () => {
 			onKeyDown={handleKeyDown}
 			data-show={show}>
 			<div className="Modal__container">
-				<h1>{headline}</h1>
-				{body}
+				{headline && <h1 className="Modal__headline">{headline}</h1>}
+				{body && <div className="Modal__body">{body}</div>}
 			</div>
 		</div>
 	)

@@ -1,9 +1,11 @@
 import React from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { RefreshCw, Award, User, Clock, Box, CheckCircle } from "react-feather"
-import IconButton from "@components/IconButton"
-import { uiStr } from "@services/utilities"
+
 import Actions from "@state/actions"
+import { uiFormat } from "@services/utilities"
+
+import IconButton from "@components/IconButton"
 import "./styles.scss"
 
 const CloseButton = ({ label = "Okay" }) => {
@@ -80,19 +82,19 @@ const Review = () => {
 					<span>Game</span>
 					<Box width={16} />
 				</div>
-				<div className="Review__item">{uiStr(game.uid)}</div>
+				<div className="Review__item">{uiFormat(game.uid)}</div>
 				<div className="Review__item label">
 					<span>Players</span>
 					<User width={16} />
 				</div>
 				<div className="Review__item">
-					{uiStr(players.map((player) => player.uid).join(", "))}
+					{uiFormat(players.map((player) => player.uid).join(", "))}
 				</div>
 				<div className="Review__item label">
 					<span>Winner</span>
 					<Award width={16} />
 				</div>
-				<div className="Review__item">{uiStr(winner.uid)}</div>
+				<div className="Review__item">{uiFormat(winner.uid)}</div>
 				<div className="Review__item label">
 					<span>Time</span>
 					<Clock width={16} />

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
-import { uiStr } from "@services/utilities"
+import { uiFormat } from "@services/utilities"
 
 const ListItem = ({
 	uid,
@@ -23,7 +23,7 @@ const ListItem = ({
 
 	return (
 		<button data-uid={uid} data-is-selected={isSelected} onClick={handleClick}>
-			{uiStr(uid)}
+			{uiFormat(uid)}
 		</button>
 	)
 }

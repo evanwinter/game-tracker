@@ -1,3 +1,7 @@
+/*
+	Responsive breakpoints (mobile-first). Apply styles after the 
+	screen is equal to or larger than the given breakpoint.
+*/
 @mixin larger-than($breakpoint) {
 	@if $breakpoint == "sm" {
 		@media (min-width: $breakpoint-sm) {
@@ -14,6 +18,10 @@
 	}
 }
 
+/* 
+	Adds a rounded border and drop shadow to give the appearance of a 
+	card-like element.
+*/
 @mixin card() {
 	border-radius: 0.5em;
 	border: 1px solid $color-light-gray;
@@ -22,6 +30,9 @@
 	color: $color-black;
 }
 
+/*
+	Makes an element fullscreen (exactly 100% width and height) and fixed in place
+*/
 @mixin fixed-fullscreen() {
 	position: fixed;
 	top: 0;
@@ -31,4 +42,30 @@
 
 	width: 100%;
 	height: 100vh;
+}
+
+/*
+	Animation mixins
+*/
+
+// Fade-in animation
+@mixin pre-fade-in() {
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 250ms ease;
+}
+@mixin post-fade-in() {
+	opacity: 1;
+	pointer-events: all;
+}
+
+// Grow/pop animation (scale up, translate Y up)
+@mixin pre-grow() {
+	opacity: 0;
+	transform: scale(0.5) translateY(1rem);
+	transition: opacity 250ms ease, transform 250ms ease;
+}
+@mixin post-grow() {
+	opacity: 1;
+	transform: scale(1) translateY(0rem);
 }

@@ -4,23 +4,23 @@ import "./styles.scss"
 const IconButton = (props) => {
 	const {
 		iconLeft = false,
-		label = null,
+		label = "",
 		onClick = null,
 		classNames = [],
+		disabled = false,
+		round = false,
+		htmlType = null,
 		children,
-		disabled,
-		round,
-		htmlType,
 	} = props
 
-	const mergedClasses = ["IconButton", ...classNames]
-	if (round) mergedClasses.push("IconButton__round")
+	const classes = ["IconButton", ...classNames]
+	if (round) classes.push("IconButton__round")
 
 	return (
 		<button
 			disabled={disabled}
 			type={htmlType}
-			className={mergedClasses.join(" ")}
+			className={classes.join(" ")}
 			data-icon-left={iconLeft}
 			onClick={onClick}>
 			{label && <span className="IconButton__label">{label}</span>}

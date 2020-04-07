@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import Actions from "@state/actions"
 import AnimatedList from "@components/AnimatedList"
+import Loader from "@components/Loader"
 
 const Games = () => {
 	const dispatch = useDispatch()
@@ -29,7 +30,7 @@ const Games = () => {
 		<div className="Games">
 			<h1>What did you play?</h1>
 			{isLoading ? (
-				"Loading... "
+				<Loader />
 			) : games.length < 1 ? (
 				"No games found."
 			) : (

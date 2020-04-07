@@ -70,6 +70,15 @@ const ModalActions = {
 const FirebaseActions = {
 	saveNewItem(dataKey, value) {
 		return async (dispatch, getState, database) => {
+			const state = getState()
+			const items = state.database[dataKey]
+			console.log(items)
+
+			if (items.map((item) => item.uid).includes(value)) {
+				console.log("Item already exists.")
+				return null
+			}
+
 			await database.saveNewItem(dataKey, value)
 			dispatch({
 				type: Types.SAVE_NEW_ITEM,

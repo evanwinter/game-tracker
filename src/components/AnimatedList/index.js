@@ -12,12 +12,12 @@ const AnimatedList = ({
 	multiSelect = false,
 	maxColumns = 3,
 }) => {
-	console.log("items", items)
 	return (
 		<ul className={`AnimatedList grid grid-${maxColumns}`}>
 			<Anime
 				opacity={[0, 1]}
 				translateY={[8, 0]}
+				scale={[0.8, 1]}
 				duration={350}
 				delay={(el, i) => i * 75}
 				easing={"easeInOutQuad"}>

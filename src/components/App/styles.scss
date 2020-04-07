@@ -3,9 +3,5 @@
 
 .App {
 	width: 100%;
-	min-height: calc(100vh - 115px);
-
-	@include larger-than(sm) {
-		min-height: calc(100vh - 147px);
-	}
+	min-height: 100vh;
 }

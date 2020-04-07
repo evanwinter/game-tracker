@@ -7,11 +7,9 @@ import IconButton from "@components/IconButton"
 
 import Actions from "@state/actions"
 import Types from "@types"
-import { uiStr } from "@services/utilities"
+import { uiFormat } from "@services/utilities"
 
 const AddItemButton = ({ step }) => {
-	console.log(step)
-
 	const dispatch = useDispatch()
 
 	// get the data key for the current step
@@ -22,12 +20,12 @@ const AddItemButton = ({ step }) => {
 	if (isDisabled) return null
 
 	// convert plural key ("games") to singluar ("game")
-	const dataKeySingluar = dataKey.substr(0, dataKey.length - 1)
+	const dataKeySingular = dataKey.substr(0, dataKey.length - 1)
 
 	const handleClick = () => {
 		dispatch(
 			Actions.showModal(
-				`Add ${uiStr(dataKeySingluar)}`,
+				`Add ${uiFormat(dataKeySingular)}`,
 				<AddItemForm dataKey={dataKey} />,
 			),
 		)
@@ -36,10 +34,11 @@ const AddItemButton = ({ step }) => {
 	return (
 		<div className="AddItemButton">
 			<IconButton
-				round={true}
+				round={false}
 				disabled={isDisabled}
 				onClick={handleClick}
-				iconLeft={true}>
+				iconLeft={true}
+				label={`Add ${uiFormat(dataKeySingular)}`}>
 				<Plus width={24} />
 			</IconButton>
 		</div>
