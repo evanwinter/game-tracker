@@ -1,8 +1,10 @@
 import Types from "@types"
 
+const removeUid = (items, uid) => items.filter((item) => item.uid !== uid)
+
 const initialState = {
 	general: {
-		step: Types.STEP_CHOOSING_GAME,
+		step: Types.STEP_INITIAL,
 	},
 
 	modal: {
@@ -26,66 +28,35 @@ const initialState = {
 }
 
 const reducer = (state = initialState, action) => {
-	if (action.type === Types.SET_GAME) {
+	if (action.type === Types.SET_ITEM) {
 		return {
 			...state,
 			session: {
 				...state.session,
-				game: action.game,
-			},
-			general: {
-				...state.general,
-				step: action.nextStep,
+				[action.destKey]: action.item,
 			},
 		}
 	}
 
-	if (action.type === Types.SET_PLAYERS) {
+	if (action.type === Types.SELECT_ITEM) {
 		return {
 			...state,
 			session: {
 				...state.session,
-				players: action.players,
-			},
-			general: {
-				...state.general,
-				step: action.nextStep,
+				[action.destKey]: [...state.session[action.destKey], action.item],
 			},
 		}
 	}
 
-	if (action.type === Types.ADD_PLAYER) {
+	if (action.type === Types.DESELECT_ITEM) {
 		return {
 			...state,
 			session: {
 				...state.session,
-				players: [...state.session.players, action.player],
-			},
-		}
-	}
-
-	if (action.type === Types.REMOVE_PLAYER) {
-		return {
-			...state,
-			session: {
-				...state.session,
-				players: state.session.players.filter(
-					(player) => player.uid !== action.player.uid,
+				[action.destKey]: removeUid(
+					state.session[action.destKey],
+					action.item.uid,
 				),
-			},
-		}
-	}
-
-	if (action.type === Types.SET_WINNER) {
-		return {
-			...state,
-			session: {
-				...state.session,
-				winner: action.winner,
-			},
-			general: {
-				...state.general,
-				step: action.nextStep,
 			},
 		}
 	}
@@ -100,42 +71,32 @@ const reducer = (state = initialState, action) => {
 		}
 	}
 
-	if (action.type === Types.LOAD_GAMES) {
+	if (action.type === Types.NEXT_STEP) {
 		return {
 			...state,
-			database: {
-				...state.database,
-				games: action.games,
+			general: {
+				...state.general,
+				step: Types.getNextStep(state.general.step),
 			},
 		}
 	}
 
-	if (action.type === Types.LOAD_PLAYERS) {
+	if (action.type === Types.PREV_STEP) {
 		return {
 			...state,
-			database: {
-				...state.database,
-				players: action.players,
+			general: {
+				...state.general,
+				step: Types.getPrevStep(state.general.step),
 			},
 		}
 	}
 
-	if (action.type === Types.SAVE_NEW_GAME) {
+	if (action.type === Types.LOAD_COLLECTION) {
 		return {
 			...state,
 			database: {
 				...state.database,
-				games: [...state.database.games, action.game],
-			},
-		}
-	}
-
-	if (action.type === Types.SAVE_NEW_PLAYER) {
-		return {
-			...state,
-			database: {
-				...state.database,
-				players: [...state.database.players, action.player],
+				[action.dataKey]: action.items,
 			},
 		}
 	}
@@ -150,16 +111,6 @@ const reducer = (state = initialState, action) => {
 		}
 	}
 
-	if (action.type === Types.CLOSE_MODAL) {
-		return {
-			...state,
-			modal: {
-				...state.modal,
-				show: false,
-			},
-		}
-	}
-
 	if (action.type === Types.SHOW_MODAL) {
 		return {
 			...state,
@@ -169,6 +120,16 @@ const reducer = (state = initialState, action) => {
 					headline: action.headline,
 					body: action.body,
 				},
+			},
+		}
+	}
+
+	if (action.type === Types.CLOSE_MODAL) {
+		return {
+			...state,
+			modal: {
+				...state.modal,
+				show: false,
 			},
 		}
 	}

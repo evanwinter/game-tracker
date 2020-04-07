@@ -1,14 +1,11 @@
-import React from "react"
+import React, { useEffect } from "react"
 import firebase from "gatsby-plugin-firebase"
 import { navigate } from "@reach/router"
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth"
 import { setUser, isLoggedIn } from "@services/authentication"
+import { isBrowser } from "@services/utilities"
 
 const Login = () => {
-	if (isLoggedIn()) {
-		navigate("/")
-	}
-
 	const getUiConfig = (auth) => ({
 		signInFlow: "popup",
 		signInOptions: [
@@ -23,15 +20,22 @@ const Login = () => {
 		},
 	})
 
+	useEffect(() => {
+		if (isLoggedIn()) {
+			navigate("/")
+		}
+	}, [])
+
 	return (
-		<>
-			{typeof window !== "undefined" && firebase && (
+		<div className="Login">
+			<h1 className="section-heading">Login</h1>
+			{isBrowser() && firebase && (
 				<StyledFirebaseAuth
 					uiConfig={getUiConfig(firebase.auth)}
 					firebaseAuth={firebase.auth()}
 				/>
 			)}
-		</>
+		</div>
 	)
 }
 

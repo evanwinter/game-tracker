@@ -1,25 +1,17 @@
 import React from "react"
-import { useSelector, useDispatch } from "react-redux"
-import Actions from "@state/actions"
-import AnimatedList from "@components/AnimatedList"
+
+import Collection from "@components/Collection"
 
 const Winner = () => {
-	const dispatch = useDispatch()
-	const { players } = useSelector((state) => state.session)
-
-	const handleClick = (e) => {
-		const { uid } = e.currentTarget.dataset
-		dispatch(Actions.setWinner(uid))
-	}
-
 	return (
 		<div className="Winner">
-			<h1>Who won?</h1>
-			<AnimatedList
-				items={players}
-				dataKey={"players"}
+			<Collection
+				src="session"
+				srcKey="players"
+				dest="session"
+				destKey="winner"
+				heading="Who won?"
 				multiSelect={false}
-				handleClick={handleClick}
 				maxColumns={2}
 			/>
 		</div>

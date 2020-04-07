@@ -1,4 +1,5 @@
 import { get, set } from "idb-keyval"
+import Logger from "@services/logger"
 
 const oneMinute = 1000 * 60
 const oneHour = oneMinute * 60
@@ -38,18 +39,18 @@ const Cache = {
 	loadFromCache: async function(dataKey) {
 		const cachedItems = await this.get(dataKey)
 		if (cachedItems && cachedItems.length > 0) {
-			console.log(`Cached ${dataKey} found...`)
+			Logger.log(`Cached ${dataKey} found...`)
 			const cacheIsStale = await this.isStale()
 			if (!cacheIsStale) {
-				console.log(`Loading cached ${dataKey} into app...`)
+				Logger.log(`Loading cached ${dataKey} into app...`)
 				return cachedItems
 			}
 
-			console.log(`Cache is stale.`)
+			Logger.log(`Cache is stale.`)
 		}
 
-		console.log(`No cached ${dataKey} found.`)
-		console.log(`Re-fetching data from the network.`)
+		Logger.log(`No cached ${dataKey} found.`)
+		Logger.log(`Re-fetching data from the network.`)
 
 		return false
 	},
@@ -81,11 +82,11 @@ const Cache = {
 		console.log("Getting IDB values...")
 		const cachedValues = await this.get(key)
 		if (cachedValues) {
-			console.log("Setting IDB values...", value)
+			Logger.log("Setting IDB values...", value)
 			const nextValues = [...cachedValues, value]
-			console.log("Next values...", nextValues)
+			Logger.log("Next values...", nextValues)
 			await this.set(key, nextValues)
-			console.log("IDB updated with new value.")
+			Logger.log("IDB updated with new value.")
 		}
 	},
 }

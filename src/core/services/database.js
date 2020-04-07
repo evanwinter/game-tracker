@@ -45,6 +45,21 @@ const Database = {
 	},
 
 	/**
+	 * Fetch collection - cache first, then Firebase
+	 */
+	fetchCollection: async function(dataKey) {
+		const cachedItems = await Cache.loadFromCache(dataKey)
+		if (cachedItems) return cachedItems
+
+		const firebaseItems = await this.getCollection(dataKey)
+
+		await Cache.set(dataKey, firebaseItems)
+		await Cache.setLastFetched(dataKey)
+
+		return firebaseItems
+	},
+
+	/**
 	 * Fetch games - cache first, then Firebase
 	 */
 	fetchGames: async function() {

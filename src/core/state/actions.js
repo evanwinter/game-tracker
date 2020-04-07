@@ -4,14 +4,17 @@ import Types from "@types"
  * Global app state
  */
 const AppActions = {
-	nextStep: (nextStep) => ({
+	setStep: (step) => ({
 		type: Types.SET_STEP,
-		nextStep: nextStep,
+		step: step,
 	}),
 
-	prevStep: (prevStep) => ({
-		type: Types.SET_STEP,
-		nextStep: prevStep,
+	nextStep: () => ({
+		type: Types.NEXT_STEP,
+	}),
+
+	prevStep: () => ({
+		type: Types.PREV_STEP,
 	}),
 
 	restart: () => ({
@@ -23,29 +26,21 @@ const AppActions = {
  * Session state; the values selected for the current submission
  */
 const SessionActions = {
-	setGame: (game) => ({
-		type: Types.SET_GAME,
-		game: { uid: game },
-		nextStep: Types.STEP_CHOOSING_PLAYERS,
+	setItem: (destKey, uid) => ({
+		type: Types.SET_ITEM,
+		item: { uid: uid },
+		destKey: destKey,
 	}),
 
-	setPlayers: (players) => ({
-		type: Types.SET_PLAYERS,
-		players: players,
-		nextStep: Types.STEP_CHOOSING_WINNER,
-	}),
-
-	setWinner: (winner) => ({
-		type: Types.SET_WINNER,
-		winner: { uid: winner },
-		nextStep: Types.STEP_REVIEWING_SUBMISSION,
-	}),
-
-	selectPlayer: (player, isSelected) => ({
-		type:
-			JSON.parse(isSelected) === true ? Types.REMOVE_PLAYER : Types.ADD_PLAYER,
-		player: { uid: player },
-	}),
+	selectItem: (destKey, uid, isSelected) => {
+		const type =
+			JSON.parse(isSelected) === true ? Types.DESELECT_ITEM : Types.SELECT_ITEM
+		return {
+			type: type,
+			item: { uid: uid },
+			destKey: destKey,
+		}
+	},
 }
 
 /**
@@ -68,57 +63,35 @@ const ModalActions = {
  * the network (Firebase) before firing
  */
 const FirebaseActions = {
-	saveNewItem(dataKey, value) {
-		return async (dispatch, getState, database) => {
-			const state = getState()
-			const items = state.database[dataKey]
-			console.log(items)
-
-			if (items.map((item) => item.uid).includes(value)) {
-				console.log("Item already exists.")
-				return null
-			}
-
-			await database.saveNewItem(dataKey, value)
-			dispatch({
-				type: Types.SAVE_NEW_ITEM,
-				dataKey: dataKey,
-				value: { uid: value },
-			})
+	saveNewItem: (dataKey, value) => async (dispatch, getState, database) => {
+		const state = getState()
+		const items = state.database[dataKey]
+		if (items.map((item) => item.uid).includes(value)) {
+			return null
 		}
+
+		await database.saveNewItem(dataKey, value)
+
+		dispatch({
+			type: Types.SAVE_NEW_ITEM,
+			dataKey: dataKey,
+			value: { uid: value },
+		})
 	},
 
-	saveGameResult(result) {
-		return async (dispatch, getState, database) => {
-			await database.saveGameResult(result)
-		}
+	saveGameResult: (result) => async (_dispatch, _getState, database) => {
+		await database.saveGameResult(result)
 	},
 
-	loadGames() {
-		return async (dispatch, getState, database) => {
-			const games = await database.fetchGames()
+	loadCollection: (dataKey) => async (dispatch, _getState, database) => {
+		const items = await database.fetchCollection(dataKey)
+		if (!items || items.length < 1) return
 
-			if (games && games.length > 0) {
-				dispatch({
-					type: Types.LOAD_GAMES,
-					games: games,
-				})
-			} else {
-				// (TODO) Display "No games found" in the UI
-			}
-		}
-	},
-
-	loadPlayers() {
-		return async (dispatch, getState, database) => {
-			const players = await database.fetchPlayers()
-			if (!players || players.length < 1) return
-
-			dispatch({
-				type: Types.LOAD_PLAYERS,
-				players: players,
-			})
-		}
+		dispatch({
+			type: Types.LOAD_COLLECTION,
+			dataKey: dataKey,
+			items: items,
+		})
 	},
 }
 

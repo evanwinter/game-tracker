@@ -17,7 +17,7 @@ const BackButton = ({ step }) => {
 	const outOfBounds = prevIndex < 0
 	const isDisabled = outOfBounds || !prevStep
 
-	const prev = () => !isDisabled && dispatch(Actions.prevStep(prevStep))
+	const prev = () => !isDisabled && dispatch(Actions.prevStep())
 
 	return (
 		<IconButton
@@ -48,7 +48,7 @@ const NextButton = ({ step }) => {
 	const outOfBounds = nextIndex > Types.STEPS_ORDERED.length
 	const isDisabled = outOfBounds || !nextStep || !isReady(step)
 
-	const next = () => !isDisabled && dispatch(Actions.nextStep(nextStep))
+	const next = () => !isDisabled && dispatch(Actions.nextStep())
 
 	return (
 		<IconButton

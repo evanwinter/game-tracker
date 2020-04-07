@@ -103,26 +103,6 @@ input[type="text"] {
 	text-align: center;
 }
 
-.App {
-	padding: 2rem;
-	@include larger-than(sm) {
-		padding: 3rem;
-	}
-
-	width: 100%;
-	max-width: $breakpoint-sm;
-	margin: 0 auto;
-
-	h1 {
-		text-align: center;
-		font-weight: 300;
-	}
-
-	p {
-		text-align: center;
-	}
-}
-
 .grid {
 	&.one-third-two-thirds {
 		grid-gap: 0;
@@ -132,4 +112,18 @@ input[type="text"] {
 
 .input-group {
 	display: flex;
+}
+
+.grid {
+	display: grid;
+	grid-gap: 1.5rem;
+
+	// default to 2 columns
+	grid-template-columns: 1fr 1fr;
+
+	&.grid-3 {
+		@include larger-than(sm) {
+			grid-template-columns: 1fr 1fr 1fr;
+		}
+	}
 }

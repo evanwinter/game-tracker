@@ -1,12 +1,14 @@
-export const isBrowser = () => typeof window !== "undefined"
+import { isBrowser } from "@services/utilities"
+
+const USER_KEY = "user"
 
 export const getUser = () =>
-	isBrowser() && window.localStorage.getItem("user")
-		? JSON.parse(window.localStorage.getItem("user"))
+	isBrowser() && window.localStorage.getItem(USER_KEY)
+		? JSON.parse(window.localStorage.getItem(USER_KEY))
 		: {}
 
 export const setUser = (user) =>
-	isBrowser() && window.localStorage.setItem("user", JSON.stringify(user))
+	isBrowser() && window.localStorage.setItem(USER_KEY, JSON.stringify(user))
 
 export const isLoggedIn = () => {
 	const user = getUser()

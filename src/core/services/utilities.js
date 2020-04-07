@@ -1,4 +1,10 @@
 /**
+ * Return true if the code is running in a browser environment
+ * (meaning it's safe to access the `window` object)
+ */
+export const isBrowser = () => typeof window !== "undefined"
+
+/**
  * Capitalizes the first letter of each word in a string.
  */
 export const capitalize = (str) => {
@@ -26,3 +32,19 @@ export const dbFormat = (str) => str.toLowerCase()
  * This isn't exactly what I want but close enough for now.
  */
 export const uiFormat = (str) => capitalize(str)
+
+/**
+ * Return a sorted array. Optionally sort by a key property on each item,
+ * instead of the item itself.
+ * @param {array} items
+ * @param {string} key
+ */
+export const sorted = (items, key = undefined) => {
+	return items.sort((a, b) => {
+		if (key) {
+			return a[key] > b[key] ? 1 : -1
+		} else {
+			return a > b ? 1 : -1
+		}
+	})
+}
