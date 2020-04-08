@@ -85,7 +85,7 @@ const FirebaseActions = {
 
 	loadCollection: (dataKey) => async (dispatch, _getState, database) => {
 		const items = await database.fetchCollection(dataKey)
-		if (!items || items.length < 1) return
+		if (!items || items.length < 1) return null
 
 		dispatch({
 			type: Types.LOAD_COLLECTION,

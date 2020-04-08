@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 import Actions from "@state/actions"
-import { isLoggedIn } from "@services/authentication"
 
 import CollectionList from "./CollectionList"
 import Loader from "@components/Loader"
@@ -21,10 +20,10 @@ const Collection = ({
 	const dispatch = useDispatch()
 	const [isLoading, setIsLoading] = useState(false)
 
-	const itemsReady = (items) => items && items.length > 0
-
-	// Load items from state[src][srcKey]
+	// Load items from Redux into component
 	const items = useSelector((state) => state[src][srcKey])
+
+	// Load items from Firebase into Redux (once)
 	useEffect(() => {
 		const loadCollection = async () => {
 			setIsLoading(true)
@@ -32,7 +31,9 @@ const Collection = ({
 			setIsLoading(false)
 		}
 
-		if (!itemsReady(items) && isLoggedIn()) {
+		const itemsReady = (items) => items && items.length > 0
+
+		if (!isLoading && !itemsReady(items)) {
 			loadCollection()
 		}
 	})

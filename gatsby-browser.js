@@ -14,7 +14,7 @@ import "@styles/index.scss"
  */
 export const onServiceWorkerUpdateReady = () => {
 	const answer = window.confirm(
-		`There's fresh data to show. ` + `Reload to display the latest version?`,
+		`There's fresh data to show. Reload to display the latest version?`,
 	)
 	if (answer === true) {
 		window.location.reload()

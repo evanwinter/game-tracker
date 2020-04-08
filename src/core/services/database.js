@@ -1,13 +1,18 @@
 import firebase from "gatsby-plugin-firebase"
 import Cache from "@services/cache"
+import { isLoggedIn } from "@services/authentication"
 import Types from "@types"
 
 const Database = {
-	getCollection: async function(dataKey) {
+	async getCollection(dataKey) {
 		if (!dataKey)
 			throw Error(
 				'Database.getCollection() is missing a required argument: collection="", item={}',
 			)
+
+		if (!isLoggedIn()) {
+			return false
+		}
 
 		try {
 			const items = []
@@ -24,7 +29,7 @@ const Database = {
 		}
 	},
 
-	addToCollection: async function(dataKey, item) {
+	async addToCollection(dataKey, item) {
 		if (!dataKey || !item)
 			throw Error(
 				'Database.addToCollection() is missing one or more required arguments: collection="", item={}',
@@ -36,7 +41,6 @@ const Database = {
 				.collection(dataKey)
 				.add(item)
 		} catch (err) {
-			console.log(err)
 			throw new Error(
 				`An error occurred adding item to ${dataKey} collection in Firebase`,
 				err,
@@ -47,11 +51,12 @@ const Database = {
 	/**
 	 * Fetch collection - cache first, then Firebase
 	 */
-	fetchCollection: async function(dataKey) {
+	async fetchCollection(dataKey) {
 		const cachedItems = await Cache.loadFromCache(dataKey)
 		if (cachedItems) return cachedItems
 
 		const firebaseItems = await this.getCollection(dataKey)
+		if (!firebaseItems) return []
 
 		await Cache.set(dataKey, firebaseItems)
 		await Cache.setLastFetched(dataKey)
@@ -60,55 +65,9 @@ const Database = {
 	},
 
 	/**
-	 * Fetch games - cache first, then Firebase
-	 */
-	fetchGames: async function() {
-		const cachedGames = await Cache.loadFromCache(Types.DB_KEY_GAMES)
-		if (cachedGames) return cachedGames
-
-		const firebaseGames = await this.getCollection(Types.DB_KEY_GAMES)
-
-		await Cache.set(Types.DB_KEY_GAMES, firebaseGames)
-		await Cache.setLastFetched(Types.DB_KEY_GAMES)
-
-		return firebaseGames
-	},
-
-	/**
-	 * Fetch players - cache first, then Firebase
-	 */
-	fetchPlayers: async function() {
-		const cachedPlayers = await Cache.loadFromCache(Types.DB_KEY_PLAYERS)
-		if (cachedPlayers) return cachedPlayers
-
-		const firebasePlayers = await this.getCollection(Types.DB_KEY_PLAYERS)
-
-		await Cache.set(Types.DB_KEY_PLAYERS, firebasePlayers)
-		await Cache.setLastFetched(Types.DB_KEY_PLAYERS)
-
-		return firebasePlayers
-	},
-
-	/**
-	 * Fetch players - cache first, then Firebase
-	 * (Note: Currently unused, but will be used for viewing all-time data)
-	 */
-	fetchResults: async function() {
-		const cachedResults = await Cache.loadFromCache(Types.DB_KEY_RESULTS)
-		if (cachedResults) return cachedResults
-
-		const firebaseResults = await this.getCollection(Types.DB_KEY_RESULTS)
-
-		await Cache.set(Types.DB_KEY_GAMES, firebaseResults)
-		await Cache.setLastFetched(Types.DB_KEY_GAMES)
-
-		return firebaseResults
-	},
-
-	/**
 	 * Save a game result to Firebase
 	 */
-	saveGameResult: async function(result) {
+	async saveGameResult(result) {
 		if (
 			!result ||
 			!result.game ||
@@ -125,7 +84,7 @@ const Database = {
 	/**
 	 * Save a new item to Firebase (game or player for now)
 	 */
-	saveNewItem: async function(dataKey, uid) {
+	async saveNewItem(dataKey, uid) {
 		if (!dataKey || !uid)
 			throw Error(
 				`Database.saveNewItem() is missing one or more required arguments: dataKey="", uid=""`,
