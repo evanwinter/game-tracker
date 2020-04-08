@@ -134,11 +134,14 @@ const reducer = (state = initialState, action) => {
 		}
 	}
 
+	// on RESTART, go to initial step and clear session data
 	if (action.type === Types.RESTART) {
 		return {
-			...initialState,
-			modal: {
-				...state.modal,
+			...state,
+			session: initialState.session,
+			general: {
+				...state.general,
+				step: Types.STEP_INITIAL,
 			},
 		}
 	}

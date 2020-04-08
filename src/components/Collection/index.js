@@ -1,24 +1,14 @@
 import React, { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import Anime from "react-anime"
 
 import Actions from "@state/actions"
-import { sorted } from "@services/utilities"
+import { isLoggedIn } from "@services/authentication"
 
-import ListItem from "@components/ListItem"
+import CollectionList from "./CollectionList"
 import Loader from "@components/Loader"
 import "./styles.scss"
 
-const animeProps = {
-	opacity: [0, 1],
-	translateY: [8, 0],
-	scale: [0.8, 1],
-	duration: 350,
-	delay: (el, i) => i * 75,
-	easing: "easeInOutQuad",
-}
-
-const DatabaseCollection = ({
+const Collection = ({
 	src = "database",
 	srcKey = "",
 	dest = "session",
@@ -31,8 +21,10 @@ const DatabaseCollection = ({
 	const dispatch = useDispatch()
 	const [isLoading, setIsLoading] = useState(false)
 
-	const items = useSelector((state) => state[src][srcKey])
+	const itemsReady = (items) => items && items.length > 0
 
+	// Load items from state[src][srcKey]
+	const items = useSelector((state) => state[src][srcKey])
 	useEffect(() => {
 		const loadCollection = async () => {
 			setIsLoading(true)
@@ -40,7 +32,7 @@ const DatabaseCollection = ({
 			setIsLoading(false)
 		}
 
-		if (!items || items.length < 1) {
+		if (!itemsReady(items) && isLoggedIn()) {
 			loadCollection()
 		}
 	})
@@ -49,51 +41,36 @@ const DatabaseCollection = ({
 		const { uid, isSelected } = e.currentTarget.dataset
 
 		if (multiSelect) {
-			console.log(
-				"Toggling item selection at destination: " + `state.${src}.${srcKey}`,
-			)
+			// if multiselect enabled, toggle item in array at state[dest][destKey]
 			dispatch(Actions.selectItem(destKey, uid, isSelected))
 		} else {
-			console.log("Setting item at destination: " + `state.session.${destKey}`)
+			// else, set item in state[dest][destKey] and go to next step
 			dispatch(Actions.setItem(destKey, uid))
 			dispatch(Actions.nextStep())
 		}
 	}
 
+	const listProps = {
+		items,
+		maxColumns,
+		multiSelect,
+		handleClick,
+		src,
+		srcKey,
+		dest,
+		destKey,
+	}
+
 	return (
 		<div className="Collection">
-			<CollectionHeader heading={heading} subheading={subheading} />
+			<header className="CollectionHeader">
+				<h1>{heading}</h1>
+				<p>{subheading}</p>
+			</header>
 
-			{isLoading ? (
-				<Loader />
-			) : (
-				<ul className={`Collection__items grid grid-${maxColumns}`}>
-					<Anime {...animeProps}>
-						{items &&
-							sorted(items, "uid").map(({ uid }) => {
-								return (
-									<li className="Collection__item" key={uid}>
-										<ListItem
-											uid={uid}
-											parentClickHandler={handleClick}
-											dataKey={srcKey}
-											multiSelect={multiSelect}
-										/>
-									</li>
-								)
-							})}
-					</Anime>
-				</ul>
-			)}
+			{isLoading ? <Loader /> : <CollectionList {...listProps} />}
 		</div>
 	)
 }
 
-const CollectionHeader = ({ heading, subheading }) => (
-	<header className="Collection__header">
-		<h1 className="Collection__heading">{heading}</h1>
-		<p className="Collection__subheading">{subheading}</p>
-	</header>
-)
-
-export default DatabaseCollection
+export default Collection

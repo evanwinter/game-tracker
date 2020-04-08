@@ -5,7 +5,6 @@ const Games = () => {
 	return (
 		<div className="Games">
 			<Collection
-				src="database"
 				srcKey="games"
 				destKey="game"
 				heading="What did you play?"
