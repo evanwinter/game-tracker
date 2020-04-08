@@ -6,7 +6,6 @@ import Progress from "@components/Progress"
 const Layout = ({ children, location }) => {
 	useEffect(() => {
 		if (!isLoggedIn() && location.pathname !== "/login") {
-			console.log(location)
 			navigate("/login")
 		}
 	})
