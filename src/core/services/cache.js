@@ -1,16 +1,19 @@
 import { get, set } from "idb-keyval"
+import { isDev } from "@services/utilities"
 
 const oneMinute = 1000 * 60
 const oneHour = oneMinute * 60
 
-const Cache = {
-	/**
-	 * The lifespan (in ms) of the cache.
-	 * If time elapsed since `lastFetched` value is greater
-	 * than `lifespan`, the cache is stale and data should
-	 * be re-fetched from Firebase.
-	 */
-	lifespan: oneHour,
+class Cache {
+	constructor(lifespan = oneHour) {
+		/**
+		 * The lifespan (in ms) of the cache.
+		 * If time elapsed since `lastFetched` value is greater
+		 * than `lifespan`, the cache is stale and data should
+		 * be re-fetched from Firebase.
+		 */
+		this.lifespan = lifespan
+	}
 
 	/**
 	 * Set a value in IndexedDB
@@ -21,7 +24,7 @@ const Cache = {
 		} catch (err) {
 			throw Error(`Error occurred setting "${key}" data in IndexedDB`)
 		}
-	},
+	}
 
 	/**
 	 * Get a value from IndexedDB
@@ -32,7 +35,7 @@ const Cache = {
 		} catch (err) {
 			throw Error(`Error occurred getting "${key}" data from IndexedDB`)
 		}
-	},
+	}
 
 	/**
 	 * Store the current time in the cache. Used to determine if the
@@ -41,7 +44,7 @@ const Cache = {
 	async setLastFetched() {
 		const now = Date.now()
 		await this.set("lastFetched", now)
-	},
+	}
 
 	/**
 	 * Load data from cache. Returns the cached value for the
@@ -57,7 +60,7 @@ const Cache = {
 		}
 
 		return false
-	},
+	}
 
 	/**
 	 * Return a boolean representing whether or not the cache is stale.
@@ -73,11 +76,17 @@ const Cache = {
 			const timeElapsed = timeNow - lastFetched
 			const cacheIsStale = timeElapsed > this.lifespan
 
+			const timeUntilStale =
+				!cacheIsStale && Math.floor((this.lifespan - timeElapsed) / 1000 / 60)
+
+			if (isDev())
+				console.log(`Cache invalidation in ${timeUntilStale} minutes.`)
+
 			return cacheIsStale
 		} catch (err) {
 			throw Error(`Error checking if the cache is stale`)
 		}
-	},
+	}
 
 	/**
 	 * Add an item to an array in IndexedDB
@@ -88,7 +97,9 @@ const Cache = {
 			const nextValues = [...cachedValues, value]
 			await this.set(key, nextValues)
 		}
-	},
+	}
 }
 
-export default Cache
+const C = new Cache(oneHour)
+
+export default C

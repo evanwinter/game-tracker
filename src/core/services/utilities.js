@@ -1,4 +1,10 @@
 /**
+ * Return true if the code is running in a dev/prod environment
+ */
+export const isDev = () => process.env.NODE_ENV === "development"
+export const isProd = () => process.env.NODE_ENV === "production"
+
+/**
  * Return true if the code is running in a browser environment
  * (meaning it's safe to access the `window` object)
  */

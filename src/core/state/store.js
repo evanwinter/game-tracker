@@ -4,19 +4,13 @@ import thunk from "redux-thunk"
 
 import reducer from "@state/reducer"
 import database from "@services/database"
+import { isDev } from "@services/utilities"
 
 const middleware = [thunk.withExtraArgument(database)]
-if (process.env.NODE_ENV === "development") {
+if (isDev()) {
 	middleware.push(logger)
 }
 
-// preloadedState will be passed in by the plugin
 export default (preloadedState) => {
-	// if (process.env.NODE_ENV === "development") {
-	// 	return createStore(reducer, preloadedState, applyMiddleware(logger))
-	// }
-
-	// return createStore(reducer, preloadedState)
-
 	return createStore(reducer, preloadedState, applyMiddleware(...middleware))
 }
