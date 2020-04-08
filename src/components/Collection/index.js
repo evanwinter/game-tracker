@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 import Actions from "@state/actions"
+import { isLoggedIn } from "@services/authentication"
 
 import CollectionList from "./CollectionList"
 import Loader from "@components/Loader"
@@ -33,7 +34,10 @@ const Collection = ({
 
 		const itemsReady = (items) => items && items.length > 0
 
-		if (!isLoading && !itemsReady(items)) {
+		// check if user is logged in before fetching; if not, they'll
+		// be redirected to /login before fetch completes, triggering
+		// a state update on unmounted component
+		if (isLoggedIn() && !isLoading && !itemsReady(items)) {
 			loadCollection()
 		}
 	})
