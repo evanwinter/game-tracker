@@ -43,7 +43,7 @@ The app is a progressive web app, meaning it's installable to devices' home scre
 * Scores -- Support for reporting game scores
 * Ties -- Support for when two or more players "win"
 
---
+---
 
 ### To Think About
 
