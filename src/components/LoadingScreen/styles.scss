@@ -12,7 +12,7 @@
 	align-items: center;
 
 	opacity: 1;
-	pointer-events: all;
+	pointer-events: none;
 
 	animation: flashLoadingScreen 3s linear forwards;
 
@@ -52,12 +52,12 @@
 	@keyframes flashLoadingScreen {
 		0% {
 			opacity: 1;
-			pointer-events: all;
+			pointer-events: none;
 		}
 
 		90% {
 			opacity: 1;
-			pointer-events: all;
+			pointer-events: none;
 		}
 
 		100% {
