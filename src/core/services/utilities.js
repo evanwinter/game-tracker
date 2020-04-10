@@ -54,3 +54,17 @@ export const sorted = (items, key = undefined) => {
 		}
 	})
 }
+
+/**
+ * Return the key/value pair with the highest value
+ */
+export const max = (obj) => {
+	return Object.entries(obj).reduce((a, b) => (obj[a[0]] > obj[b[0]] ? a : b))
+}
+
+/**
+ * Return the key/value pair with the lowest value
+ */
+export const min = (obj) => {
+	return Object.entries(obj).reduce((a, b) => (obj[a[0]] < obj[b[0]] ? a : b))
+}

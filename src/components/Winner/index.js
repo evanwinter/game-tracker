@@ -9,7 +9,7 @@ const Winner = () => (
 		dest="session"
 		destKey="winner"
 		heading="Who won?"
-		multiSelect={false}
+		multiSelect={true}
 		maxColumns={2}
 	/>
 )

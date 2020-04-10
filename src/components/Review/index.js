@@ -41,7 +41,9 @@ const Review = () => {
 		}
 
 		try {
-			await dispatch(Actions.saveGameResult(result))
+			const success = await dispatch(Actions.saveGameResult(result))
+			if (!success) throw Error
+
 			dispatch(
 				Actions.showModal(
 					"Success",
@@ -52,9 +54,7 @@ const Review = () => {
 				),
 			)
 
-			setTimeout(() => {
-				restart()
-			}, 500)
+			setTimeout(() => restart(), 500)
 		} catch (err) {
 			dispatch(
 				Actions.showModal(
@@ -66,13 +66,20 @@ const Review = () => {
 				),
 			)
 
-			setTimeout(() => {
-				restart()
-			}, 500)
+			setTimeout(() => restart(), 500)
 		}
 	}
 
 	const restart = () => dispatch(Actions.restart())
+
+	const isTie = (winner) => {
+		// (TODO) should be more explicit than this
+		return winner.length > 1
+	}
+
+	const renderTie = (winner) => {
+		return uiFormat(winner.map((player) => player.uid).join(", "))
+	}
 
 	return (
 		<div className="Review">
@@ -94,7 +101,9 @@ const Review = () => {
 					<span>Winner</span>
 					<Award width={16} />
 				</div>
-				<div className="Review__item">{uiFormat(winner.uid)}</div>
+				<div className="Review__item">
+					{isTie(winner) ? renderTie(winner) : uiFormat(winner[0].uid)}
+				</div>
 				<div className="Review__item label">
 					<span>Time</span>
 					<Clock width={16} />

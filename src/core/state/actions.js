@@ -63,35 +63,40 @@ const ModalActions = {
  * the network (Firebase) before firing
  */
 const FirebaseActions = {
-	saveNewItem: (dataKey, value) => async (dispatch, getState, database) => {
-		const state = getState()
-		const items = state.database[dataKey]
-		if (items.map((item) => item.uid).includes(value)) {
-			return null
-		}
-
-		await database.saveNewItem(dataKey, value)
+	/**
+	 * Save an "item" (player or game) to the database.
+	 */
+	saveNewItem: (dataKey, value) => async (dispatch, _getState, database) => {
+		const success = await database.saveNewItem(dataKey, value)
+		if (!success) return false
 
 		dispatch({
 			type: Types.SAVE_NEW_ITEM,
 			dataKey: dataKey,
 			value: { uid: value },
 		})
+
+		return true
 	},
 
+	/**
+	 * Save a game result to the database.
+	 */
 	saveGameResult: (result) => async (_dispatch, _getState, database) => {
-		await database.saveGameResult(result)
+		return await database.saveGameResult(result)
 	},
 
-	loadCollection: (dataKey) => async (dispatch, _getState, database) => {
+	fetchCollection: (dataKey) => async (dispatch, _getState, database) => {
 		const items = await database.fetchCollection(dataKey)
-		if (!items || items.length < 1) return null
+		if (!items || items.length === 0) return false
 
 		dispatch({
 			type: Types.LOAD_COLLECTION,
 			dataKey: dataKey,
 			items: items,
 		})
+
+		return items
 	},
 }
 

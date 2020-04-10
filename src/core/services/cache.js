@@ -5,7 +5,7 @@ const oneMinute = 1000 * 60
 const oneHour = oneMinute * 60
 
 class Cache {
-	constructor(lifespan = oneHour) {
+	constructor(lifespan = oneHour, enabled = true) {
 		/**
 		 * The lifespan (in ms) of the cache.
 		 * If time elapsed since `lastFetched` value is greater
@@ -13,6 +13,8 @@ class Cache {
 		 * be re-fetched from Firebase.
 		 */
 		this.lifespan = lifespan
+
+		this.enabled = false
 	}
 
 	/**

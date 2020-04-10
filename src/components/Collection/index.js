@@ -8,6 +8,12 @@ import CollectionList from "./CollectionList"
 import Loader from "@components/Loader"
 import "./styles.scss"
 
+const STATUSES = {
+	initial: "initial",
+	loading: "loading",
+	completed: "completed",
+}
+
 const Collection = ({
 	src = "database",
 	srcKey = "",
@@ -18,30 +24,35 @@ const Collection = ({
 	multiSelect = false,
 	maxColumns = 3,
 }) => {
+	// enable redux action dispatches
 	const dispatch = useDispatch()
-	const [isLoading, setIsLoading] = useState(false)
 
-	// Load items from Redux into component
+	// status is either initial, loading (show loader), or completed (show items or "no items found")
+	const [status, setStatus] = useState(STATUSES.initial)
+
+	// render items from redux
 	const items = useSelector((state) => state[src][srcKey])
 
-	// Load items from Firebase into Redux (once)
 	useEffect(() => {
+		/**
+		 * Fetch data from database and put it in redux store
+		 */
 		const loadCollection = async () => {
-			setIsLoading(true)
-			await dispatch(Actions.loadCollection(srcKey))
-			setIsLoading(false)
+			setStatus(STATUSES.loading)
+			await dispatch(Actions.fetchCollection(srcKey))
+			setStatus(STATUSES.completed)
 		}
 
-		const itemsReady = (items) => items && items.length > 0
-
-		// check if user is logged in before fetching; if not, they'll
-		// be redirected to /login before fetch completes, triggering
-		// a state update on unmounted component
-		if (isLoggedIn() && !isLoading && !itemsReady(items)) {
+		// if user is logged in and data hasn't been fetched yet, fetch data
+		if (isLoggedIn() && status === STATUSES.initial) {
 			loadCollection()
 		}
 	})
 
+	/**
+	 * Collection item click handler -- if Collection is multiselect,
+	 * toggle selection; else set item in session data and advance to next step
+	 */
 	const handleClick = (e) => {
 		const { uid, isSelected } = e.currentTarget.dataset
 
@@ -55,6 +66,7 @@ const Collection = ({
 		}
 	}
 
+	// props used by child components (List and Item)
 	const listProps = {
 		items,
 		maxColumns,
@@ -73,7 +85,9 @@ const Collection = ({
 				<p>{subheading}</p>
 			</header>
 
-			{isLoading ? <Loader /> : <CollectionList {...listProps} />}
+			{status === STATUSES.loading && <Loader />}
+			{status === STATUSES.completed && <CollectionList {...listProps} />}
+			{status === STATUSES.initial && null}
 		</div>
 	)
 }

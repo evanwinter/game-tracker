@@ -32,13 +32,17 @@ const BackButton = ({ step }) => {
 
 const NextButton = ({ step }) => {
 	const dispatch = useDispatch()
-	const { players } = useSelector((state) => state.session)
+	const { winner, players } = useSelector((state) => state.session)
 
-	const enoughItemsSelected = (items) => items.length >= MIN_ITEMS
+	const enoughPlayersSelected = (items) => items.length >= MIN_ITEMS
+	const enoughWinnersSelected = (items) => items.length >= 1
 
 	const isReady = (step) => {
 		if (step === Types.STEP_CHOOSING_PLAYERS) {
-			return enoughItemsSelected(players) // show after 2+ players selected
+			return enoughPlayersSelected(players) // show after 2+ players selected
+		}
+		if (step === Types.STEP_CHOOSING_WINNER) {
+			return enoughWinnersSelected(winner) // show after 2+ players selected
 		}
 		return false
 	}
