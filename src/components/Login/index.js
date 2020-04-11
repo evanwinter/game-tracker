@@ -20,13 +20,6 @@ const Login = () => {
 		},
 	})
 
-	// useEffect(() => {
-	// 	if (isLoggedIn()) {
-	// 		if (isLoggedInGroup()) navigate("/")
-	// 		else navigate("/group-login")
-	// 	}
-	// }, [])
-
 	return (
 		<div className="Login">
 			<h1 className="section-heading">Login</h1>

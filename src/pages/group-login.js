@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react"
-import { useDispatch } from "react-redux"
 import { isLoggedInGroup, setGroup } from "@services/authentication"
 import { navigate } from "gatsby"
 

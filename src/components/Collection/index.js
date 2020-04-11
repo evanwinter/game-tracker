@@ -45,7 +45,7 @@ const Collection = ({
 
 		// if user is logged in and data hasn't been fetched yet, fetch data
 		if (isLoggedIn() && isLoggedInGroup() && status === STATUSES.initial) {
-			console.log('Calling loadCollection from component')
+			console.log("Calling loadCollection from component")
 			loadCollection()
 		}
 	})

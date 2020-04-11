@@ -11,10 +11,16 @@ const Layout = ({ children, location }) => {
 			navigate("/login")
 		}
 
-		if (isLoggedIn() && !isLoggedInGroup()) {
+		if (
+			isLoggedIn() &&
+			!isLoggedInGroup() &&
+			location.pathname !== "/group-login"
+		) {
 			navigate("/group-login")
 		}
 	})
+
+	console.log(location)
 
 	return (
 		<>

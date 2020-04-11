@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React from "react"
 import { useSelector } from "react-redux"
 
 import Players from "@components/Players"
@@ -25,11 +25,6 @@ const App = () => {
 		if (step === Types.STEP_CHOOSING_WINNER) return <Winner />
 		if (step === Types.STEP_REVIEWING_SUBMISSION) return <Review />
 	}
-
-	// (TODO) Pre-load games and players into redux
-	// useEffect(() => {
-
-	// })
 
 	return (
 		<>
