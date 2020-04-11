@@ -4,8 +4,8 @@ import { isLoggedIn } from "@services/authentication"
 import Types from "@types"
 
 const validResult = (result) => {
-	const { game, players, winner, timestamp } = result
-	return game && players && winner && timestamp
+	const { game, players, winner, time } = result
+	return game && players && winner && time
 }
 
 const Database = {
@@ -13,6 +13,9 @@ const Database = {
 	 * Get a collection from Firebase
 	 */
 	async getFirebaseCollection(collection) {
+
+		console.log('Calling getFirebaseCollection')
+
 		if (!collection)
 			throw Error(
 				'Database.getCollection() is missing a required argument: collection=""',
@@ -24,7 +27,7 @@ const Database = {
 
 		try {
 			const items = []
-
+			console.log('Trying to get '+ collection + ' collection')
 			const itemsRef = await firebase
 				.firestore()
 				.collection(collection)

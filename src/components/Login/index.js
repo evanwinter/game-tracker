@@ -1,8 +1,8 @@
-import React, { useEffect } from "react"
+import React from "react"
 import firebase from "gatsby-plugin-firebase"
 import { navigate } from "@reach/router"
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth"
-import { setUser, isLoggedIn } from "@services/authentication"
+import { setUser } from "@services/authentication"
 import { isBrowser } from "@services/utilities"
 
 const Login = () => {
@@ -15,16 +15,17 @@ const Login = () => {
 		callbacks: {
 			signInSuccessWithAuthResult: (result) => {
 				setUser(result.user)
-				navigate("/")
+				navigate("/group-login")
 			},
 		},
 	})
 
-	useEffect(() => {
-		if (isLoggedIn()) {
-			navigate("/")
-		}
-	}, [])
+	// useEffect(() => {
+	// 	if (isLoggedIn()) {
+	// 		if (isLoggedInGroup()) navigate("/")
+	// 		else navigate("/group-login")
+	// 	}
+	// }, [])
 
 	return (
 		<div className="Login">

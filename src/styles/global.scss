@@ -79,6 +79,12 @@ button {
 	}
 }
 
+label {
+	font-size: 1.15rem;
+	display: block;
+	margin-bottom: 0.5em;
+}
+
 input[type="text"] {
 	border: 1px solid $color-light-gray;
 	box-shadow: 0px 1px 3px $color-medium-gray;

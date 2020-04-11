@@ -11,6 +11,7 @@ import ActionBar from "@components/ActionBar"
 import Types from "@types"
 
 import "./styles.scss"
+import { isLoggedIn, isLoggedInGroup } from "../../core/services/authentication"
 
 const App = () => {
 	const { step } = useSelector((state) => state.general)
@@ -32,8 +33,12 @@ const App = () => {
 
 	return (
 		<>
-			<div className="App">{stepReducer(step)}</div>
-			<ActionBar />
+			{isLoggedIn() && isLoggedInGroup() && (
+				<>
+					<div className="App">{stepReducer(step)}</div>
+					<ActionBar />
+				</>
+			)}
 			<Modal />
 		</>
 	)

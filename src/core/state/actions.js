@@ -87,6 +87,7 @@ const FirebaseActions = {
 	},
 
 	fetchCollection: (dataKey) => async (dispatch, _getState, database) => {
+		console.log('Calling fetchCollection from action')
 		const items = await database.fetchCollection(dataKey)
 		if (!items || items.length === 0) return false
 

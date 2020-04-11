@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 import Actions from "@state/actions"
-import { isLoggedIn } from "@services/authentication"
+import { isLoggedIn, isLoggedInGroup } from "@services/authentication"
 
 import CollectionList from "./CollectionList"
 import Loader from "@components/Loader"
@@ -44,7 +44,8 @@ const Collection = ({
 		}
 
 		// if user is logged in and data hasn't been fetched yet, fetch data
-		if (isLoggedIn() && status === STATUSES.initial) {
+		if (isLoggedIn() && isLoggedInGroup() && status === STATUSES.initial) {
+			console.log('Calling loadCollection from component')
 			loadCollection()
 		}
 	})

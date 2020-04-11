@@ -35,6 +35,7 @@ const AddItemForm = ({ dataKey }) => {
 		const formattedValue = dbFormat(value)
 		// check if its a valid submission
 		const valid = validate(currentItems, formattedValue)
+		console.log(valid)
 		if (valid) {
 			// send to firebase and mirror in redux until next re-fetch
 			dispatch(Actions.closeModal())

@@ -22,8 +22,13 @@ const SuccessMessage = () => {
 	return <p>Successfully saved game result to the database.</p>
 }
 
-const ErrorMessage = () => {
-	return <p>An error occurred saving game result to the database.</p>
+const ErrorMessage = ({ message }) => {
+	return (
+		<>
+			<p>An error occurred saving game result to the database.</p>
+			<p>{message}</p>
+		</>
+	)
 }
 
 const Review = () => {
@@ -36,8 +41,9 @@ const Review = () => {
 		const result = {
 			game: game.uid,
 			players: players.map((player) => player.uid),
-			winner: winner.uid,
+			winner: winner.map((player) => player.uid),
 			time: time,
+			isTie: winner.length > 1,
 		}
 
 		try {
@@ -60,7 +66,7 @@ const Review = () => {
 				Actions.showModal(
 					"Error",
 					<>
-						<ErrorMessage />
+						<ErrorMessage message={err} />
 						<CloseButton />
 					</>,
 				),
@@ -80,6 +86,8 @@ const Review = () => {
 	const renderTie = (winner) => {
 		return uiFormat(winner.map((player) => player.uid).join(", "))
 	}
+
+	// (TODO) Edit time
 
 	return (
 		<div className="Review">
