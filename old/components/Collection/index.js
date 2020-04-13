@@ -11,7 +11,7 @@ import "./styles.scss"
 const STATUSES = {
 	initial: "initial",
 	loading: "loading",
-	completed: "completed",
+	completed: "completed"
 }
 
 const Collection = ({
@@ -22,7 +22,7 @@ const Collection = ({
 	heading = "",
 	subheading = "",
 	multiSelect = false,
-	maxColumns = 3,
+	maxColumns = 3
 }) => {
 	// enable redux action dispatches
 	const dispatch = useDispatch()
@@ -31,7 +31,7 @@ const Collection = ({
 	const [status, setStatus] = useState(STATUSES.initial)
 
 	// render items from redux
-	const items = useSelector((state) => state[src][srcKey])
+	const items = useSelector(state => state[src][srcKey])
 
 	useEffect(() => {
 		/**
@@ -39,7 +39,7 @@ const Collection = ({
 		 */
 		const loadCollection = async () => {
 			setStatus(STATUSES.loading)
-			await dispatch(Actions.fetchCollection(srcKey))
+			await dispatch(Actions.loadItems(srcKey))
 			setStatus(STATUSES.completed)
 		}
 
@@ -54,7 +54,7 @@ const Collection = ({
 	 * Collection item click handler -- if Collection is multiselect,
 	 * toggle selection; else set item in session data and advance to next step
 	 */
-	const handleClick = (e) => {
+	const handleClick = e => {
 		const { uid, isSelected } = e.currentTarget.dataset
 
 		if (multiSelect) {
@@ -76,7 +76,7 @@ const Collection = ({
 		src,
 		srcKey,
 		dest,
-		destKey,
+		destKey
 	}
 
 	return (
@@ -86,7 +86,7 @@ const Collection = ({
 				<p>{subheading}</p>
 			</header>
 
-			{status === STATUSES.loading && <Loader />}
+			{status === STATUSES.loading && null}
 			{status === STATUSES.completed && <CollectionList {...listProps} />}
 			{status === STATUSES.initial && null}
 		</div>

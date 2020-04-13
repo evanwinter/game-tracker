@@ -7,7 +7,7 @@ const animeProps = {
 	scale: [0.8, 1],
 	duration: 350,
 	delay: (el, i) => i * 75,
-	easing: "easeInOutQuad",
+	easing: "easeInOutQuad"
 }
 
 const AnimatedList = ({ children }) => {

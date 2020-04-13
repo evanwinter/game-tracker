@@ -4,7 +4,7 @@ import T from "@types"
 import "./styles.scss"
 
 const Progress = () => {
-	const { step } = useSelector((state) => state.general)
+	const { step } = useSelector(state => state.general)
 
 	useEffect(() => {
 		const currentIndex = T.STEPS_ORDERED.indexOf(step)
@@ -14,11 +14,16 @@ const Progress = () => {
 
 		document.documentElement.style.setProperty(
 			"--progress-bar-width",
-			progressValue,
+			progressValue
 		)
 	}, [step])
 
-	return <div className="Progress"></div>
+	return (
+		<div className="Progress">
+			<div className="track"></div>
+			<div className="current-progress"></div>
+		</div>
+	)
 }
 
 export default Progress

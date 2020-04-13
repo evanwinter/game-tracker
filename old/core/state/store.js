@@ -7,8 +7,10 @@ import database from "@services/database"
 import { isDev } from "@services/utilities"
 
 const middleware = [thunk.withExtraArgument(database)]
-if (isDev()) middleware.push(logger)
+if (isDev()) {
+	middleware.push(logger)
+}
 
 export default (preloadedState) => {
-  return createStore(reducer, preloadedState, applyMiddleware(...middleware))
+	return createStore(reducer, preloadedState, applyMiddleware(...middleware))
 }

@@ -4,22 +4,22 @@ import Types from "@types"
  * Global app state
  */
 const AppActions = {
-	setStep: (step) => ({
+	setStep: step => ({
 		type: Types.SET_STEP,
-		step: step,
+		step: step
 	}),
 
 	nextStep: () => ({
-		type: Types.NEXT_STEP,
+		type: Types.NEXT_STEP
 	}),
 
 	prevStep: () => ({
-		type: Types.PREV_STEP,
+		type: Types.PREV_STEP
 	}),
 
 	restart: () => ({
-		type: Types.RESTART,
-	}),
+		type: Types.RESTART
+	})
 }
 
 /**
@@ -29,7 +29,7 @@ const SessionActions = {
 	setItem: (destKey, uid) => ({
 		type: Types.SET_ITEM,
 		item: { uid: uid },
-		destKey: destKey,
+		destKey: destKey
 	}),
 
 	selectItem: (destKey, uid, isSelected) => {
@@ -38,9 +38,9 @@ const SessionActions = {
 		return {
 			type: type,
 			item: { uid: uid },
-			destKey: destKey,
+			destKey: destKey
 		}
-	},
+	}
 }
 
 /**
@@ -48,14 +48,14 @@ const SessionActions = {
  */
 const ModalActions = {
 	closeModal: () => ({
-		type: Types.CLOSE_MODAL,
+		type: Types.CLOSE_MODAL
 	}),
 
 	showModal: (headline, body) => ({
 		type: Types.SHOW_MODAL,
 		headline: headline,
-		body: body,
-	}),
+		body: body
+	})
 }
 
 /**
@@ -73,7 +73,7 @@ const FirebaseActions = {
 		dispatch({
 			type: Types.SAVE_NEW_ITEM,
 			dataKey: dataKey,
-			value: { uid: value },
+			value: { uid: value }
 		})
 
 		return true
@@ -82,30 +82,46 @@ const FirebaseActions = {
 	/**
 	 * Save a game result to the database.
 	 */
-	saveGameResult: (result) => async (_dispatch, _getState, database) => {
+	saveGameResult: result => async (_dispatch, _getState, database) => {
 		return await database.saveGameResult(result)
 	},
 
-	fetchCollection: (dataKey) => async (dispatch, _getState, database) => {
-		console.log('Calling fetchCollection from action')
-		const items = await database.fetchCollection(dataKey)
+	// fetchCollection: dataKey => async (dispatch, _getState, database) => {
+	// 	console.log("Calling fetchCollection from action")
+	// 	const items = await database.fetchCollection(dataKey)
+	// 	if (!items || items.length === 0) return false
+
+	// 	dispatch({
+	// 		type: Types.LOAD_COLLECTION,
+	// 		dataKey: dataKey,
+	// 		items: items
+	// 	})
+
+	// 	return items
+	// },
+
+	/**
+	 * Load items from cache/Firestore into Redux
+	 */
+	loadItems: itemType => async (dispatch, _getState, database) => {
+		console.log("Fetching items and loading them into redux")
+
+		const items = await database.getItems(itemType)
 		if (!items || items.length === 0) return false
 
 		dispatch({
-			type: Types.LOAD_COLLECTION,
-			dataKey: dataKey,
-			items: items,
+			type: Types.LOAD_ITEMS,
+			itemType: itemType,
+			items: items
 		})
-
-		return items
-	},
+	}
 }
 
 const Actions = {
 	...AppActions,
 	...SessionActions,
 	...ModalActions,
-	...FirebaseActions,
+	...FirebaseActions
 }
 
 export default Actions

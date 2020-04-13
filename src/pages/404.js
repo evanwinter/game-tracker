@@ -1,13 +1,13 @@
 import React from "react"
 import { Link } from "gatsby"
 
-const NotFound = () => {
+const NotFoundPage = () => {
   return (
-    <div className="NotFound">
-      404: Page not found.
-      <Link to="/">Back to Home</Link>
+    <div className="NotFoundPage">
+      <p>404 – there's nothing at this location.</p>
+      <Link to="/">Back</Link>
     </div>
   )
 }
 
-export default NotFound
+export default NotFoundPage

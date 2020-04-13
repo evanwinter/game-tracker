@@ -6,18 +6,18 @@ import { setUser } from "@services/authentication"
 import { isBrowser } from "@services/utilities"
 
 const Login = () => {
-	const getUiConfig = (auth) => ({
+	const getUiConfig = auth => ({
 		signInFlow: "popup",
 		signInOptions: [
 			auth.GoogleAuthProvider.PROVIDER_ID,
-			auth.EmailAuthProvider.PROVIDER_ID,
+			auth.EmailAuthProvider.PROVIDER_ID
 		],
 		callbacks: {
-			signInSuccessWithAuthResult: (result) => {
+			signInSuccessWithAuthResult: result => {
 				setUser(result.user)
 				navigate("/group-login")
-			},
-		},
+			}
+		}
 	})
 
 	return (

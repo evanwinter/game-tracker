@@ -1,42 +1,33 @@
 import { isBrowser } from "@services/utilities"
 
 const USER_KEY = "user"
-const GROUP_KEY = "group"
 
-export const getUser = () =>
-	isBrowser() && window.localStorage.getItem(USER_KEY)
-		? JSON.parse(window.localStorage.getItem(USER_KEY))
-		: {}
-
+/**
+ * Set the logged-in user
+ */
 export const setUser = (user) =>
-	isBrowser() && window.localStorage.setItem(USER_KEY, JSON.stringify(user))
+  isBrowser() && window.localStorage.setItem(USER_KEY, JSON.stringify(user))
 
+/**
+ * Get the logged-in user
+ */
+export const getUser = () =>
+  isBrowser() && window.localStorage.getItem(USER_KEY)
+    ? JSON.parse(window.localStorage.getItem(USER_KEY))
+    : {}
+
+/**
+ * Return true if the current user is logged in
+ */
 export const isLoggedIn = () => {
-	const user = getUser()
-	return !!user.email
+  const user = getUser()
+  return !!user.email
 }
 
-export const setGroup = () =>
-	isBrowser() && window.localStorage.setItem(GROUP_KEY, "true")
-
-export const getGroup = () =>
-	isBrowser() && window.localStorage.getItem(GROUP_KEY)
-		? JSON.parse(window.localStorage.getItem(GROUP_KEY))
-		: false
-
-export const isLoggedInGroup = () => {
-	const group = getGroup()
-	return !!group
-}
-
+/**
+ * Log out and clear the logged-in user's data
+ */
 export const logout = async (firebase) => {
-	return new Promise((resolve) => {
-		firebase
-			.auth()
-			.signOut()
-			.then(function() {
-				setUser({})
-				resolve()
-			})
-	})
+  await firebase.auth().signOut()
+  setUser({})
 }
