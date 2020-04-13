@@ -21,7 +21,7 @@ const Login = () => {
 
   return (
     <div className="Login">
-      {firebase && (
+      {isBrowser() && firebase && (
         <StyledFirebaseAuth
           uiConfig={getUiConfig(firebase.auth)}
           firebaseAuth={firebase.auth()}
