@@ -1,7 +1,7 @@
 function Types() {
-  this.RESTART = "RESTART"
+  // this.RESTART = "RESTART"
 
-  this.SET_STEP = "SET_STEP"
+  // this.SET_STEP = "SET_STEP"
   this.NEXT_STEP = "NEXT_STEP"
   this.PREV_STEP = "PREV_STEP"
 
@@ -18,15 +18,16 @@ function Types() {
 
   this.SELECT_ITEM = "SELECT_ITEM"
   this.DESELECT_ITEM = "DESELECT_ITEM"
+  this.TOGGLE_ITEM = "TOGGLE_ITEM"
   this.SET_ITEM = "SET_ITEM"
 
   this.LOAD_ITEMS = "LOAD_ITEMS"
 
-  this.SAVE_NEW_GAME_RESULT = "SAVE_NEW_GAME_RESULT"
-  this.SAVE_NEW_ITEM = "SAVE_NEW_ITEM"
+  // this.SAVE_NEW_GAME_RESULT = "SAVE_NEW_GAME_RESULT"
+  // this.SAVE_NEW_ITEM = "SAVE_NEW_ITEM"
 
-  this.SHOW_MODAL = "SHOW_MODAL"
-  this.CLOSE_MODAL = "CLOSE_MODAL"
+  // this.SHOW_MODAL = "SHOW_MODAL"
+  // this.CLOSE_MODAL = "CLOSE_MODAL"
 
   this.getNextStep = function(step) {
     const index = this.STEPS_ORDERED.indexOf(step)

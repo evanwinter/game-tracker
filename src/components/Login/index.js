@@ -4,6 +4,7 @@ import { navigate } from "@reach/router"
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth"
 import { setUser } from "@services/authentication"
 import { isBrowser } from "@services/utilities"
+import "./styles.scss"
 
 const Login = () => {
   const getUiConfig = (auth) => ({

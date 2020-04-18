@@ -30,7 +30,7 @@ module.exports = {
         alias: {
           "@components": "src/components",
           "@styles": "src/styles",
-          // "@actions": "src/core/state/actions.js",
+          "@hooks": "src/core/hooks/index.js",
           "@services": "src/core/services",
           "@state": "src/core/state",
           "@types": "src/core/state/types.js",

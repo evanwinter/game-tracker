@@ -23,3 +23,23 @@ export const capitalize = (str) => {
   )
   return capitalizedWords.join(" ")
 }
+
+/**
+ * Format a string for storage in the database
+ * Currently, just puts it in lower case. Eventually, might
+ * remove spaces and do other things to normalize and reduce
+ * issues with duplicates.
+ */
+export const dbFormat = (str) => str.toLowerCase()
+
+/**
+ * Format a string for display in the UI.
+ * Currently, it just capitalizes the first letter of each word.
+ * This isn't exactly what I want but close enough for now.
+ */
+export const uiFormat = (str) => capitalize(str)
+
+/**
+ * Filter out a uid and return the filtered array.
+ */
+export const removeUid = (items, uid) => items.filter((item) => item.uid !== uid)

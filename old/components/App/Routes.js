@@ -7,13 +7,16 @@ import Review from "@components/Review"
 import Collection from "@components/Collection"
 
 const Games = () => (
-	<Collection
-		srcKey="games"
-		destKey="game"
-		heading="What did you play?"
-		multiSelect={false}
+	<Collection 
+		itemSrc="games"
 	/>
 )
+	// <Collection
+	// 	srcKey="games"
+	// 	destKey="game"
+	// 	heading="What did you play?"
+	// 	multiSelect={false}
+	// />
 
 const Players = () => (
 	<Collection

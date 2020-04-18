@@ -1,0 +1,20 @@
+@import "@styles/shared/variables";
+@import "@styles/shared/mixins";
+
+.App {
+  width: 100%;
+  max-width: $breakpoint-sm;
+  min-height: 100vh;
+
+  margin: 0 auto;
+
+  padding: 2rem;
+  @include larger-than(sm) {
+    padding: 3rem;
+  }
+
+  h1,
+  p {
+    text-align: center;
+  }
+}

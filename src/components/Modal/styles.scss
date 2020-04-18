@@ -1,0 +1,51 @@
+@import "@styles/shared/variables";
+@import "@styles/shared/mixins";
+
+@mixin modal-animate-in() {
+  @include pre-fade-in();
+
+  .Modal__container {
+    @include pre-grow();
+  }
+
+  &[data-show="true"] {
+    @include post-fade-in();
+
+    .Modal__container {
+      @include post-grow();
+    }
+  }
+}
+
+.Modal {
+  z-index: 100;
+  @include fixed-fullscreen();
+  @include modal-animate-in();
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: rgba($color-black, 0.75);
+
+  &__container {
+    @include card();
+    background: $background-color;
+    box-shadow: 0px 1px 5px $color-black;
+
+    max-width: $breakpoint-sm;
+    height: auto;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    margin: auto 1rem;
+    padding: 3rem;
+  }
+
+  &__body {
+    text-align: center;
+  }
+}

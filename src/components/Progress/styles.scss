@@ -1,0 +1,27 @@
+@import "@styles/shared/variables";
+
+.Progress {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	width: 100%;
+
+	height: 4px;
+
+	.track {
+		position: absolute;
+		height: 4px;
+		width: 100%;
+		background: $color-light-gray;
+	}
+
+	.current-progress {
+		position: absolute;
+		height: 4px;
+		width: var(--progress-bar-width);
+		background: $color-light-green;
+
+		transition: width $transition-default;
+	}
+}

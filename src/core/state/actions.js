@@ -1,51 +1,46 @@
 import T from "@types"
 
 const AppActions = {
-  setStep: (step) => ({
-    type: T.SET_STEP,
-    step: step,
-  }),
-
+  // setStep: (step) => ({
+  //   type: T.SET_STEP,
+  //   step: step,
+  // }),
   nextStep: () => ({
     type: T.NEXT_STEP,
   }),
-
   prevStep: () => ({
     type: T.PREV_STEP,
   }),
-
-  restart: () => ({
-    type: T.RESTART,
-  }),
+  // restart: () => ({
+  //   type: T.RESTART,
+  // }),
 }
 
 const SessionActions = {
-  // setItem: (itemType, uid) => ({
-  //   type: T.SET_ITEM,
-  //   item: { uid: uid },
-  //   itemType: itemType,
-  // }),
-  // selectItem: (itemType, uid, isSelected) => {
-  //   const type =
-  //     JSON.parse(isSelected) === true ? T.DESELECT_ITEM : T.SELECT_ITEM
-  //   return {
-  //     type: type,
-  //     item: { uid: uid },
-  //     itemType: itemType,
-  //   }
-  // },
+  setItem: (destKey, uid) => ({
+    type: T.SET_ITEM,
+    item: { uid: uid },
+    destKey: destKey,
+  }),
+
+  toggleItem: (destKey, uid) => {
+    return {
+      type: T.TOGGLE_ITEM,
+      item: { uid: uid },
+      destKey: destKey,
+    }
+  },
 }
 
 const ModalActions = {
-  showModal: (headline, body) => ({
-    type: T.SHOW_MODAL,
-    headline: headline,
-    body: body,
-  }),
-
-  closeModal: () => ({
-    type: T.CLOSE_MODAL,
-  }),
+  // showModal: (headline, body) => ({
+  //   type: T.SHOW_MODAL,
+  //   headline: headline,
+  //   body: body,
+  // }),
+  // closeModal: () => ({
+  //   type: T.CLOSE_MODAL,
+  // }),
 }
 
 /**
@@ -72,19 +67,20 @@ const FirebaseActions = {
   // saveGameResult: (result) => async (_dispatch, _getState, database) => {
   //   return await database.saveGameResult(result)
   // },
-  // /**
-  //  * Load items from cache/Firestore into Redux
-  //  */
-  // loadItems: (itemType) => async (dispatch, _getState, database) => {
-  //   console.log("Fetching items and loading them into redux")
-  //   const items = await database.getItems(itemType)
-  //   if (!items || items.length === 0) return false
-  //   dispatch({
-  //     type: T.LOAD_ITEMS,
-  //     itemType: itemType,
-  //     items: items,
-  //   })
-  // },
+
+  /**
+   * Load items from cache/Firestore into Redux
+   */
+  loadItems: (storeKey) => async (dispatch, _getState, database) => {
+    const items = await database.getItems(storeKey)
+    if (items && items.length > 0) {
+      dispatch({
+        type: T.LOAD_ITEMS,
+        storeKey: storeKey,
+        items: items,
+      })
+    }
+  },
 }
 
 const Actions = {
