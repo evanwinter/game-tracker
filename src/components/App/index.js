@@ -3,6 +3,7 @@ import { useSelector } from "react-redux"
 import { renderRoute } from "@components/Routes"
 import Progress from "@components/Progress"
 import Modal from "@components/Modal"
+import ActionBar from "@components/ActionBar"
 import "./styles.scss"
 
 const App = () => {
@@ -14,6 +15,8 @@ const App = () => {
       <Modal />
 
       <main>{renderRoute(step)}</main>
+
+      <ActionBar />
     </div>
   )
 }
