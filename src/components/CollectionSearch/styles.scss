@@ -6,4 +6,19 @@
   }
 
   margin-bottom: $margin-md;
+
+  // &[data-is-focused="true"] {
+  //   position: fixed;
+  //   top: 0;
+  //   left: 0;
+  //   width: 100%;
+  //   height: 100vh;
+  //   background: white;
+  // }
+
+  &__list {
+    .CollectionItem {
+      margin: 1rem;
+    }
+  }
 }
